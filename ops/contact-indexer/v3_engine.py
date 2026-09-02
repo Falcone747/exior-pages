@@ -66,7 +66,10 @@ def cities():
     return {cc:[n for _,n in sorted(v,reverse=True)] for cc,v in out.items()}
 
 async def setup(pool):
-    async with pool.acquire() as c: await c.execute(SCHEMA)
+    async with pool.acquire() as c:
+        await c.execute(SCHEMA)
+        await c.execute("UPDATE companies SET status='DISCOVERED',updated_at=now() WHERE status='RESOLVING' AND updated_at < now()-interval '10 minutes'")
+        await c.execute("UPDATE companies co SET status='DISCOVERED',updated_at=now() WHERE co.status <> 'DISCOVERED' AND NOT EXISTS (SELECT 1 FROM forms f WHERE f.company_id=co.id)")
     if OLD_DB.exists(): await migrate_old(pool)
 
 async def migrate_old(pool):
@@ -78,6 +81,7 @@ async def migrate_old(pool):
         async with pool.acquire() as c:
             await c.executemany('''INSERT INTO companies(domain,homepage,country,source_url,status) VALUES($1,$2,$3,$4,$5)
              ON CONFLICT(domain) DO NOTHING''', rows)
+            await c.execute("UPDATE companies co SET status='DISCOVERED',updated_at=now() WHERE NOT EXISTS (SELECT 1 FROM forms f WHERE f.company_id=co.id)")
         s.close(); marker.write_text(str(len(rows)))
         print('MIGRATED_SQLITE',len(rows),flush=True)
     except Exception as e: print('MIGRATION_ERROR',repr(e),flush=True)
@@ -116,9 +120,10 @@ async def discovery_worker(pool,r,n):
 
 async def fetch(client,url):
     try:
-        r=await client.get(url,follow_redirects=True,timeout=12,headers={'User-Agent':'Mozilla/5.0 AppleWebKit/537.36 Chrome/124 Safari/537.36'})
+        r=await client.get(url,follow_redirects=True,timeout=httpx.Timeout(12.0,connect=6.0),headers={'User-Agent':'Mozilla/5.0 AppleWebKit/537.36 Chrome/124 Safari/537.36'})
         if r.status_code<400 and 'html' in r.headers.get('content-type',''): return str(r.url),r.text
-    except Exception:pass
+    except (httpx.HTTPError, asyncio.TimeoutError, OSError):
+        pass
     return None,None
 
 def candidate_links(base,html):
@@ -163,23 +168,30 @@ async def claim_company(pool):
 async def resolver_worker(pool,client,n):
     while True:
         row=await claim_company(pool)
-        if not row: await asyncio.sleep(.3); continue
-        cid,d,home=row['id'],row['domain'],row['homepage']; base,html=await fetch(client,home)
-        if not html:
-            async with pool.acquire() as c: await c.execute("UPDATE companies SET status='FETCH_FAILED',updated_at=now() WHERE id=$1",cid)
-            continue
-        found=0
-        for u in candidate_links(base,html):
-            page_url,page_html=await fetch(client,u)
-            if not page_html:continue
-            captcha,no_sol,forms=inspect_forms(page_html)
-            for sig,fields,phone in forms:
-                found+=1
-                status='CONTACTABLE' if captcha=='none' and not phone and not no_sol else ('CAPTCHA' if captcha!='none' else 'PHONE_REQUIRED' if phone else 'NO_SOLICITATION')
-                async with pool.acquire() as c:
-                    await c.execute('''INSERT INTO forms(company_id,page_url,signature,captcha,phone_required,no_solicitation,fields_json,status)
-                     VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(company_id,page_url,signature) DO NOTHING''',cid,page_url,sig,captcha,phone,no_sol,orjson.loads(orjson.dumps(fields)),status)
-        async with pool.acquire() as c: await c.execute("UPDATE companies SET status=$1,updated_at=now() WHERE id=$2",'FORM_FOUND' if found else 'NO_FORM',cid)
+        if not row:
+            await asyncio.sleep(.2); continue
+        cid,d,home=row['id'],row['domain'],row['homepage']
+        try:
+            base,html=await fetch(client,home)
+            if not html:
+                async with pool.acquire() as c: await c.execute("UPDATE companies SET status='FETCH_FAILED',updated_at=now() WHERE id=$1",cid)
+                continue
+            found=0
+            for u in candidate_links(base,html):
+                page_url,page_html=await fetch(client,u)
+                if not page_html:continue
+                captcha,no_sol,forms=inspect_forms(page_html)
+                for sig,fields,phone in forms:
+                    found+=1
+                    status='CONTACTABLE' if captcha=='none' and not phone and not no_sol else ('CAPTCHA' if captcha!='none' else 'PHONE_REQUIRED' if phone else 'NO_SOLICITATION')
+                    async with pool.acquire() as c:
+                        await c.execute('''INSERT INTO forms(company_id,page_url,signature,captcha,phone_required,no_solicitation,fields_json,status)
+                         VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(company_id,page_url,signature) DO NOTHING''',cid,page_url,sig,captcha,phone,no_sol,orjson.loads(orjson.dumps(fields)),status)
+            async with pool.acquire() as c: await c.execute("UPDATE companies SET status=$1,updated_at=now() WHERE id=$2",'FORM_FOUND' if found else 'NO_FORM',cid)
+        except Exception as e:
+            print(f'RESOLVER_ERROR worker={n} company={d} err={type(e).__name__}',flush=True)
+            async with pool.acquire() as c: await c.execute("UPDATE companies SET status='DISCOVERED',updated_at=now() WHERE id=$1",cid)
+            await asyncio.sleep(.2)
 
 async def message_preparer(pool):
     while True:
@@ -204,7 +216,8 @@ async def claim_screenshot(pool):
 async def screenshot_worker(pool,browser,n):
     while True:
         row=await claim_screenshot(pool)
-        if not row: await asyncio.sleep(.5); continue
+        if not row:
+            await asyncio.sleep(.5); continue
         ev=EVIDENCE/f"{row['company_id']:09d}_{row['domain'].replace('.','_')}"; ev.mkdir(parents=True,exist_ok=True)
         path=ev/f"form-{row['id']}.png"; ctx=await browser.new_context(viewport={'width':1365,'height':900}); page=await ctx.new_page()
         try:
@@ -218,6 +231,7 @@ async def stats(pool):
         async with pool.acquire() as c:
             row=await c.fetchrow('''SELECT
              (SELECT count(*) FROM companies) companies,
+             (SELECT count(*) FROM companies WHERE status='DISCOVERED') discovered,
              (SELECT count(*) FROM companies WHERE status='RESOLVING') resolving,
              (SELECT count(*) FROM forms) forms,
              (SELECT count(*) FROM forms WHERE status='CONTACTABLE') contactable,
@@ -229,8 +243,8 @@ async def main():
     pool=await asyncpg.create_pool(PG_DSN,min_size=8,max_size=40,command_timeout=30)
     r=redis.from_url(REDIS_URL,decode_responses=False)
     await setup(pool)
-    limits=httpx.Limits(max_connections=HTTP_CONCURRENCY,max_keepalive_connections=HTTP_CONCURRENCY)
-    async with httpx.AsyncClient(limits=limits,http2=True) as client:
+    limits=httpx.Limits(max_connections=HTTP_CONCURRENCY,max_keepalive_connections=HTTP_CONCURRENCY,keepalive_expiry=20.0)
+    async with httpx.AsyncClient(limits=limits,http2=False) as client:
         async with async_playwright() as pw:
             browser=await pw.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
             tasks=[asyncio.create_task(query_producer(r)),asyncio.create_task(message_preparer(pool)),asyncio.create_task(stats(pool))]
