@@ -4,7 +4,7 @@ s=json.loads((ROOT/'app/marketing-agencies/sector-spec.json').read_text())
 OUT=ROOT/'_site'; PAGE=OUT/'marketing-agencies'; PAGE.mkdir(parents=True,exist_ok=True)
 shutil.copy2(ROOT/'app/marketing-agencies/agency.css',PAGE/'agency.css')
 shutil.copy2(ROOT/'app/marketing-agencies/premium.css',PAGE/'premium.css')
-PAY='https://buy.stripe.com/4gMbJ08rSdjl3Nx20R7IY00'
+PAY='https://buy.stripe.com/4gM9AS5fGdjl4RBeND7IY01'
 def e(x): return html.escape(str(x))
 def cta(label,cls='btn primary'): return f'<a class="{cls}" href="{PAY}"><span>{e(label)}</span><span aria-hidden="true">↗</span></a>'
 def tag(txt): return f'<div class="eyebrow">{e(txt)}</div>'
