@@ -28,10 +28,12 @@ jobs:
         run: |
           test -s _site/marketing-agencies/index.html
           test -s _site/marketing-agencies/agency.css
-          grep -F 'https://buy.stripe.com/4gMbJ08rSdjl3Nx20R7IY00' _site/marketing-agencies/index.html
+          test -s _site/marketing-agencies/premium.css
+          grep -F 'https://buy.stripe.com/4gM9AS5fGdjl4RBeND7IY01' _site/marketing-agencies/index.html
           grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
           grep -F 'Install an intelligence layer around your agency.' _site/marketing-agencies/index.html
           grep -F 'Install EXIOR — US$500' _site/marketing-agencies/index.html
+          grep -F 'LIVE DECISION LAYER' _site/marketing-agencies/index.html
           ! grep -F 'INDEPENDENT MARKETING' _site/marketing-agencies/index.html
       - name: Render visual QA
         run: |
