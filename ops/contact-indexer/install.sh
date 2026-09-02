@@ -10,10 +10,10 @@ curl -fsSL "$REPO/requirements.txt" -o "$APP/requirements.txt"
 python3 -m venv "$APP/venv"
 "$APP/venv/bin/pip" install --upgrade pip
 "$APP/venv/bin/pip" install -r "$APP/requirements.txt"
-"$APP/venv/bin/python" -m playwright install --with-deps chromium
+"$APP/venv/bin/python" -m playwright install chromium
 cat >/etc/systemd/system/exior-contact-indexer.service <<'UNIT'
 [Unit]
-Description=EXIOR Contact Form Indexer
+Description=EXIOR Parallel Contact Form Indexer
 After=network-online.target
 Wants=network-online.target
 [Service]
@@ -23,20 +23,21 @@ ExecStart=/opt/exior-contact-indexer/venv/bin/python /opt/exior-contact-indexer/
 Restart=always
 RestartSec=5
 Environment=PYTHONUNBUFFERED=1
-Environment=HTTP_CONCURRENCY=60
+Environment=HTTP_CONCURRENCY=120
+Environment=DISCOVERY_WORKERS=12
+Environment=SCREENSHOT_WORKERS=8
 Environment=CITY_MIN_POP=25000
-MemoryMax=6G
+MemoryMax=7G
 [Install]
 WantedBy=multi-user.target
 UNIT
 systemctl daemon-reload
-systemctl enable --now exior-contact-indexer.service
-sleep 5
-echo '=== SERVICE ==='
+systemctl enable exior-contact-indexer.service
+systemctl restart exior-contact-indexer.service
+sleep 6
+echo '=== EXIOR PARALLEL INDEXER ==='
 systemctl --no-pager --full status exior-contact-indexer.service || true
-echo '=== LOGS ==='
-journalctl -u exior-contact-indexer.service -n 30 --no-pager || true
-echo '=== COMMANDS ==='
+echo '=== DATABASE ==='
+sqlite3 "$APP/data/index.db" "SELECT 'companies',COUNT(*) FROM companies; SELECT 'forms',COUNT(*) FROM forms; SELECT 'message_ready',COUNT(*) FROM outreach_queue WHERE status='MESSAGE_READY';" || true
+echo '=== LIVE ==='
 echo 'journalctl -u exior-contact-indexer -f'
-echo "sqlite3 $APP/data/index.db \"select status,count(*) from companies group by status;\""
-echo "sqlite3 $APP/data/index.db \"select status,count(*) from forms group by status;\""
