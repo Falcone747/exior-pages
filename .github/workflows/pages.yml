@@ -30,9 +30,18 @@ jobs:
           test -s _site/marketing-agencies/agency.css
           grep -F 'https://buy.stripe.com/4gMbJ08rSdjl3Nx20R7IY00' _site/marketing-agencies/index.html
           grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
-          grep -F 'Turn your agency into an operating system.' _site/marketing-agencies/index.html
+          grep -F 'Install an intelligence layer around your agency.' _site/marketing-agencies/index.html
           grep -F 'Install EXIOR — US$500' _site/marketing-agencies/index.html
           ! grep -F 'INDEPENDENT MARKETING' _site/marketing-agencies/index.html
+      - name: Render visual QA
+        run: |
+          python -m http.server 8000 --directory _site >/tmp/exior-http.log 2>&1 &
+          npx --yes playwright@1.55.0 install chromium
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-desktop.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: visual-qa
+          path: exior-desktop.png
       - uses: actions/configure-pages@v5
         with:
           enablement: true
