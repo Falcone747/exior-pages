@@ -15,6 +15,8 @@ sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='exior_contac
 curl -fsSL "$RAW/v3_engine.py" -o "$APP/v3_engine.py"
 curl -fsSL "$RAW/requirements-v3.txt" -o "$APP/requirements-v3.txt"
 systemctl stop exior-contact-indexer-v3.service 2>/dev/null || true
+systemctl stop exior-contact-indexer.service 2>/dev/null || true
+systemctl stop exior-contact-sender.service 2>/dev/null || true
 rm -rf "$APP/venv-v3"
 python3 -m venv "$APP/venv-v3"
 "$APP/venv-v3/bin/pip" install --upgrade pip
@@ -47,12 +49,16 @@ LimitNOFILE=65535
 WantedBy=multi-user.target
 UNIT
 systemctl daemon-reload
-systemctl stop exior-contact-indexer.service 2>/dev/null || true
 systemctl enable exior-contact-indexer-v3.service
+systemctl start exior-contact-indexer-v3.service
+sleep 5
+PGPASSWORD=exior_local_only psql -h 127.0.0.1 -U exior -d exior_contact -v ON_ERROR_STOP=1 -c "UPDATE companies c SET status='DISCOVERED', updated_at=now() WHERE NOT EXISTS (SELECT 1 FROM forms f WHERE f.company_id=c.id) AND c.status <> 'DISCOVERED';" || true
 systemctl restart exior-contact-indexer-v3.service
 sleep 8
 echo '=== V3 STATUS ==='
 systemctl --no-pager --full status exior-contact-indexer-v3.service || true
+echo '=== V3 COUNTS ==='
+PGPASSWORD=exior_local_only psql -h 127.0.0.1 -U exior -d exior_contact -Atc "SELECT 'companies='||count(*) FROM companies; SELECT 'discovered='||count(*) FROM companies WHERE status='DISCOVERED'; SELECT 'resolving='||count(*) FROM companies WHERE status='RESOLVING'; SELECT 'forms='||count(*) FROM forms; SELECT 'contactable='||count(*) FROM forms WHERE status='CONTACTABLE'; SELECT 'ready='||count(*) FROM outreach_queue WHERE status='MESSAGE_READY';" || true
 echo '=== V3 LOGS ==='
 journalctl -u exior-contact-indexer-v3.service -n 40 --no-pager || true
 echo '=== COMMAND ==='
