@@ -1,0 +1,45 @@
+{
+  "identity": { "slug": "marketing-agencies", "segmentName": "Independent Marketing / Growth / Performance Agencies", "segmentDescriptor": "5–30 employees — owner-led — US/UK/Canada/Australia" },
+  "hero": { "enabled": true, "eyebrow": "EXIOR FOR INDEPENDENT MARKETING AGENCIES", "headline": "Install the operating system your agency is missing.", "subheadline": "For US$500, EXIOR installs a private operating intelligence layer around your agency — connecting pipeline, clients, delivery, capacity, margin and cash with live market, competitor, AI and technology signals. It then identifies what to sell, improve, automate or build next — and starts putting the highest-value systems in place.", "cta": "Install EXIOR Agency OS — US$500", "microcopy": "Private setup · First working system within 72h after required access · No retainer" },
+  "marketSignals": { "enabled": true, "eyebrow": "MARKET SIGNALS", "items": [
+    { "stat": "13%", "label": "Average digital-agency net margin in 2025" },
+    { "stat": "62%", "label": "Have implemented AI across the business or are actively implementing it" },
+    { "stat": "66%", "label": "Are receiving client requests around AEO" },
+    { "stat": "44%", "label": "Say clients expect faster turnaround than a year ago" }
+  ]},
+  "opportunity": { "enabled": true, "eyebrow": "OPPORTUNITY", "headline": "Your agency has more tools, data and AI than ever. The advantage now is knowing what deserves action.", "body": "Clients expect faster delivery, stronger strategic guidance and clearer ROI. Meanwhile, sales, margin, capacity and technology decisions are still managed across separate tools, meetings and instincts. EXIOR connects those decisions into one operating system.", "cards": [
+    { "title": "Revenue", "body": "Pipeline quality, qualification, pricing, proposals and account expansion are rarely managed as one economic system." },
+    { "title": "Margin", "body": "Scope creep, rework, poor service mix and invisible project economics quietly consume profit after the sale." },
+    { "title": "Capacity", "body": "Senior people still spend expensive time on research, reporting, coordination, qualification and repeatable operational work." },
+    { "title": "External Change", "body": "AI models, AEO, competitors, client expectations and new tools move faster than management teams can rationally evaluate them." }
+  ]},
+  "installed": { "enabled": true, "eyebrow": "WHAT GETS INSTALLED", "headline": "One operating system across the agency.", "modules": [
+    { "title": "Agency Command Center", "description": "Connect pipeline, clients, projects, scope, capacity, margin and cash into one executive decision layer." },
+    { "title": "Revenue Engine", "description": "Structure target accounts, buying signals, qualification, opportunities, proposals and existing-client expansion around expected commercial value." },
+    { "title": "Margin & Capacity Engine", "description": "Surface scope drift, project economics, delivery friction, low-value senior work and upcoming capacity constraints before they become expensive." },
+    { "title": "AI & Tool Intelligence Radar", "description": "Continuously compare relevant models, agents and software against your workflows, economics and existing stack." },
+    { "title": "Market & Competitor Radar", "description": "Track client demand, competitor moves, AEO/search changes, new services, technology shifts and external signals." },
+    { "title": "Automation & Internal Tools Layer", "description": "Identify and deploy dashboards, integrations, agents, workflows and internal tools that create the strongest operational return." }
+  ]},
+  "augmentedAgency": { "enabled": true, "eyebrow": "THE AUGMENTED AGENCY", "headline": "What could your agency become capable of?", "capabilities": ["Always-On Target Account Discovery", "Trigger-Based Prospecting", "Live Margin Protection", "Forward Capacity Planning", "Client Expansion Intelligence", "Automated ROI Reporting", "Continuous AI & Competitor Intelligence", "New-Offer Discovery"] },
+  "engine": { "enabled": true, "eyebrow": "THE EXIOR ENGINE", "headline": "Your agency is not an island.", "body": "Most systems work with what your agency already knows. EXIOR connects what is happening inside the business with what is changing outside it — then ranks what deserves action and builds the capability required to act.", "insideLabel": "Inside", "inside": ["Pipeline", "Clients", "Projects", "Scope", "Capacity", "Margin", "Cash", "Team", "Tools", "Knowledge"], "outsideLabel": "Outside", "outside": ["Client demand", "Competitors", "AI models", "New tools", "AEO & search", "Platforms", "Talent", "Market shifts", "Regulation", "New opportunities"], "loop": ["CONNECT", "MODEL", "DETECT", "PRIORITIZE", "BUILD", "MEASURE", "LEARN"], "statement": "You don't need another tool. You need a system that decides which tools, actions and capabilities are worth deploying." },
+  "decisionEngine": { "enabled": true, "eyebrow": "DECISION ENGINE", "headline": "We absorb the complexity of selection.", "priorities": ["Instrument client and service economics", "Build a trigger-based revenue engine", "Install scope and delivery guardrails", "Turn AI usage into an operating system", "Monetize emerging client demand"], "disclaimer": "Sector-level hypotheses. Final priorities depend on your agency data." },
+  "offer": { "enabled": true, "eyebrow": "OFFER", "product": "EXIOR Agency OS", "price": "US$500", "headline": "Install the first working intelligence and execution layer around your agency.", "description": "EXIOR configures the initial system, connects the most useful available inputs and turns the first set of signals into prioritized decisions and working capabilities.", "deliverablesLabel": "Deliverables", "deliverables": ["Private EXIOR workspace", "Agency operating model", "Executive Command Center", "Revenue Engine configuration", "Margin & Capacity intelligence", "Market, competitor and AI/tool intelligence baseline", "Initial connectors, structured imports and bounded automation components where technically available", "Prioritized 30/90-day build and execution queue"], "deliveryLabel": "Delivery", "delivery": "First working system established within 72 hours after the required information and access are received.", "cta": "Install EXIOR Agency OS — US$500" },
+  "howItWorks": { "enabled": true, "eyebrow": "HOW IT WORKS", "steps": [
+    { "title": "Start", "description": "Purchase and complete the structured intake." },
+    { "title": "Connect", "description": "Provide context and authorize useful data sources." },
+    { "title": "Install", "description": "EXIOR builds the operating model, intelligence layers and bounded execution components." },
+    { "title": "Improve", "description": "Keep the system internally or activate continuous operation." }
+  ]},
+  "continuous": { "enabled": true, "eyebrow": "EXIOR CONTINUOUS", "headline": "Turn EXIOR into a permanent operating capability.", "items": [
+    { "title": "MONITOR", "description": "Company performance, clients, market, competitors, AI and tools." },
+    { "title": "DETECT", "description": "Revenue opportunities, margin leaks, capacity constraints and external change." },
+    { "title": "PRIORITIZE", "description": "Continuously update what deserves action now." },
+    { "title": "EXECUTE", "description": "Run approved intelligence, automation and operational workflows within scope." },
+    { "title": "LEARN", "description": "Measure outcomes and improve future decisions." }
+  ]},
+  "faq": { "enabled": true, "eyebrow": "FAQ", "questions": ["What exactly gets installed for US$500?", "What happens within the 72-hour setup?", "Do we need to replace our current tools?", "Can EXIOR build custom automations and internal tools?", "Do we need EXIOR Continuous?", "What information does EXIOR need?"] },
+  "finalCta": { "enabled": true, "headline": "Stop adding tools. Start adding capabilities.", "body": "Your agency already generates the data. The market already generates the signals. EXIOR turns both into a system that continuously identifies what your agency should sell, improve, automate and build next.", "price": "US$500", "cta": "Install EXIOR Agency OS" },
+  "sources": { "enabled": false, "eyebrow": "Sources", "items": [] },
+  "footer": { "description": "Organizational intelligence and execution systems that expand what companies can see, decide and do.", "termsLabel": "Terms", "privacyLabel": "Privacy", "companyInformationLabel": "Company Information" }
+}
