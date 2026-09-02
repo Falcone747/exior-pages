@@ -1,45 +1,82 @@
 {
-  "identity": { "slug": "marketing-agencies", "segmentName": "Marketing Agencies", "segmentDescriptor": "Marketing agencies" },
-  "hero": { "enabled": true, "eyebrow": "EXIOR FOR MARKETING AGENCIES", "headline": "Turn your agency into an operating system.", "subheadline": "EXIOR connects revenue, clients, delivery, capacity and margin with live market and AI intelligence — then identifies and implements the highest-value actions, automations and internal systems for your agency.", "cta": "Install EXIOR — US$500", "microcopy": "Private implementation · First working system within 72h of access" },
-  "marketSignals": { "enabled": true, "eyebrow": "THE OPERATING GAP", "items": [
-    { "stat": "Revenue", "label": "Know which opportunities, accounts and services deserve attention now." },
-    { "stat": "Margin", "label": "Detect scope drift, delivery friction and weak economics before they compound." },
-    { "stat": "Capacity", "label": "Identify work that should be automated, delegated or redesigned." },
-    { "stat": "Market", "label": "Turn changes in demand, competitors, AI and technology into actionable decisions." }
-  ]},
-  "opportunity": { "enabled": true, "eyebrow": "ONE DECISION LAYER", "headline": "See the agency as one system — and know what to improve next.", "body": "EXIOR connects the commercial, operational and external signals that normally live across separate tools and decisions. The result is a continuously prioritized view of where your agency can create more revenue, margin and operating leverage.", "cards": [
-    { "title": "Revenue", "body": "Prioritize target accounts, buying signals, proposals and expansion opportunities by expected value." },
-    { "title": "Margin", "body": "Expose scope drift, weak service economics and delivery patterns that quietly reduce profitability." },
-    { "title": "Capacity", "body": "Find repetitive and low-leverage work, then deploy the right automation or internal capability." },
-    { "title": "Intelligence", "body": "Continuously evaluate market shifts, competitors, AI models and new tools against your agency." }
-  ]},
-  "installed": { "enabled": true, "eyebrow": "WHAT EXIOR INSTALLS", "headline": "A private intelligence and execution layer for your agency.", "modules": [
-    { "title": "Agency Command Center", "description": "A unified executive view across pipeline, clients, delivery, capacity, margin and cash." },
-    { "title": "Revenue Intelligence", "description": "Prioritized target accounts, buying signals, opportunities, proposals and account expansion." },
-    { "title": "Margin & Capacity Intelligence", "description": "Continuous visibility into scope, project economics, delivery friction and capacity constraints." },
-    { "title": "AI & Technology Intelligence", "description": "Relevant models, agents and software continuously evaluated against your workflows and economics." },
-    { "title": "Market & Competitor Intelligence", "description": "Changes in client demand, competitors, channels and technology translated into actionable signals." },
-    { "title": "Automation & Internal Systems", "description": "Dashboards, integrations, agents and workflows prioritized and implemented where they create the strongest return." }
-  ]},
-  "augmentedAgency": { "enabled": true, "eyebrow": "THE AUGMENTED AGENCY", "headline": "Capabilities that compound.", "capabilities": ["Always-On Opportunity Discovery", "Trigger-Based Prospecting", "Live Margin Protection", "Forward Capacity Planning", "Client Expansion Intelligence", "Automated Performance Reporting", "Continuous Market & AI Intelligence", "New-Offer Discovery"] },
-  "engine": { "enabled": true, "eyebrow": "THE EXIOR ENGINE", "headline": "Internal performance. External intelligence. One decision system.", "body": "EXIOR combines what is happening inside your agency with what is changing outside it, ranks the highest-value opportunities and turns them into working capabilities.", "insideLabel": "Inside", "inside": ["Pipeline", "Clients", "Projects", "Scope", "Capacity", "Margin", "Cash", "Team", "Tools", "Knowledge"], "outsideLabel": "Outside", "outside": ["Client demand", "Competitors", "AI models", "New tools", "Search", "Platforms", "Talent", "Market shifts", "Regulation", "Opportunities"], "loop": ["CONNECT", "MODEL", "DETECT", "PRIORITIZE", "BUILD", "MEASURE", "LEARN"], "statement": "EXIOR continuously determines what your agency should sell, improve, automate and build next." },
-  "decisionEngine": { "enabled": true, "eyebrow": "PRIORITIZATION", "headline": "Complexity in. Clear priorities out.", "priorities": ["Increase revenue quality", "Protect client and service margins", "Remove operational bottlenecks", "Deploy high-return automation", "Capture emerging demand"], "disclaimer": "Priorities are configured from your agency's actual operating context." },
-  "offer": { "enabled": true, "eyebrow": "EXIOR INSTALLATION", "product": "EXIOR Agency OS", "price": "US$500", "headline": "Install the first working version of EXIOR around your agency.", "description": "We configure your operating model, connect the highest-value available inputs, establish the core intelligence layers and implement the first prioritized capabilities.", "deliverablesLabel": "Initial installation", "deliverables": ["Private EXIOR workspace", "Agency operating model", "Executive Command Center", "Revenue intelligence layer", "Margin & capacity intelligence", "Market, competitor and AI intelligence baseline", "Initial integrations and automations where technically available", "Prioritized 30/90-day execution roadmap"], "deliveryLabel": "Implementation", "delivery": "First working system within 72 hours after required information and access are received.", "cta": "Install EXIOR — US$500" },
-  "howItWorks": { "enabled": true, "eyebrow": "IMPLEMENTATION", "steps": [
-    { "title": "Start", "description": "Purchase the installation and complete the structured intake." },
-    { "title": "Connect", "description": "Authorize the data and systems required for the initial implementation." },
-    { "title": "Install", "description": "EXIOR configures the intelligence layers and first working capabilities." },
-    { "title": "Operate", "description": "Use the installed system internally or activate continuous operation." }
-  ]},
-  "continuous": { "enabled": true, "eyebrow": "EXIOR CONTINUOUS", "headline": "Make intelligence and improvement continuous.", "items": [
-    { "title": "MONITOR", "description": "Performance, clients, market, competitors, AI and technology." },
-    { "title": "DETECT", "description": "Revenue opportunities, margin leaks, constraints and external change." },
-    { "title": "PRIORITIZE", "description": "Continuously rank the actions with the highest expected value." },
-    { "title": "EXECUTE", "description": "Run approved intelligence, automation and operational workflows." },
-    { "title": "LEARN", "description": "Measure outcomes and improve future decisions." }
-  ]},
-  "faq": { "enabled": true, "eyebrow": "FAQ", "questions": ["What is included in the US$500 installation?", "What is delivered within 72 hours?", "Do we need to replace our existing tools?", "Can EXIOR build custom automations and internal systems?", "What happens after the initial installation?", "What access does EXIOR need?"] },
-  "finalCta": { "enabled": true, "headline": "Install a better operating layer around your agency.", "body": "Connect the signals you already have, add the intelligence you are missing and continuously prioritize the capabilities that create the most value.", "price": "US$500", "cta": "Install EXIOR — US$500" },
-  "sources": { "enabled": false, "eyebrow": "Sources", "items": [] },
-  "footer": { "description": "Organizational intelligence and execution systems for companies operating in complex environments.", "termsLabel": "Terms", "privacyLabel": "Privacy", "companyInformationLabel": "Company Information" }
+  "identity": {"slug":"marketing-agencies","segmentName":"Marketing Agencies"},
+  "hero": {
+    "eyebrow":"EXIOR FOR MARKETING AGENCIES",
+    "headline":"Install an intelligence layer around your agency.",
+    "subheadline":"EXIOR connects sales, clients, delivery, capacity and margin with live market and AI signals. It then prioritizes what deserves action and implements the highest-value automations, dashboards and internal systems for your agency.",
+    "cta":"Install EXIOR — US$500",
+    "microcopy":"Private implementation · First working system within 72h of access"
+  },
+  "outcomes": {
+    "eyebrow":"ONE OPERATING LAYER",
+    "headline":"More visibility. Better decisions. More operating leverage.",
+    "items":[
+      {"title":"Revenue","body":"Prioritize the accounts, opportunities, proposals and expansion plays with the highest expected value."},
+      {"title":"Margin","body":"Expose scope drift, weak service economics and delivery patterns before they erode profitability."},
+      {"title":"Capacity","body":"Find repetitive and low-leverage work, then deploy the right automation or internal capability."},
+      {"title":"Intelligence","body":"Continuously evaluate client demand, competitors, AI models and new tools against your agency."}
+    ]
+  },
+  "system": {
+    "eyebrow":"WHAT EXIOR INSTALLS",
+    "headline":"A private operating system built around how your agency actually works.",
+    "body":"EXIOR does not add another disconnected tool. It creates a decision and execution layer across the systems you already use, then builds only the capabilities that create measurable value.",
+    "modules":[
+      {"title":"Executive Command Center","body":"A unified view of pipeline, clients, delivery, capacity, margin and cash."},
+      {"title":"Revenue Intelligence","body":"Buying signals, opportunity scoring, proposal priorities and client expansion in one commercial layer."},
+      {"title":"Margin & Capacity Intelligence","body":"Live visibility into scope, project economics, delivery friction and resource constraints."},
+      {"title":"Market & AI Intelligence","body":"External changes translated into specific decisions for your positioning, services, workflows and stack."},
+      {"title":"Automation & Internal Systems","body":"Dashboards, integrations, agents and workflows implemented where they create the strongest return."}
+    ]
+  },
+  "engine": {
+    "eyebrow":"THE EXIOR ENGINE",
+    "headline":"Internal performance and external intelligence, continuously reconciled.",
+    "body":"EXIOR connects what is happening inside the agency with what is changing outside it. The system detects opportunities and constraints, ranks them by expected value, and turns the highest-priority decisions into working capabilities.",
+    "inside":["Pipeline","Clients","Projects","Capacity","Margin","Cash"],
+    "outside":["Client demand","Competitors","AI models","Platforms","Search","Market shifts"],
+    "loop":["CONNECT","DETECT","PRIORITIZE","BUILD","MEASURE","LEARN"]
+  },
+  "offer": {
+    "eyebrow":"INITIAL INSTALLATION",
+    "product":"EXIOR Agency OS",
+    "price":"US$500",
+    "headline":"Start with one paid installation. Leave with a working system.",
+    "description":"We configure the operating model, connect the highest-value available inputs, establish the core intelligence layers and implement the first prioritized capabilities.",
+    "deliverables":[
+      "Private EXIOR workspace",
+      "Agency operating model",
+      "Executive Command Center",
+      "Revenue intelligence layer",
+      "Margin & capacity intelligence",
+      "Market, competitor and AI intelligence baseline",
+      "Initial integrations and automations where technically available",
+      "Prioritized 30/90-day execution roadmap"
+    ],
+    "delivery":"First working system within 72 hours after the required information and access are received.",
+    "cta":"Install EXIOR — US$500"
+  },
+  "process": {
+    "eyebrow":"IMPLEMENTATION",
+    "headline":"From purchase to working system in four steps.",
+    "steps":[
+      {"title":"Start","body":"Purchase the installation and complete the structured intake."},
+      {"title":"Connect","body":"Authorize only the data and systems required for the initial implementation."},
+      {"title":"Install","body":"EXIOR configures the intelligence layers and first working capabilities."},
+      {"title":"Operate","body":"Use the installed system internally or activate continuous operation."}
+    ]
+  },
+  "faq":[
+    {"q":"What is included in the US$500 installation?","a":"The initial operating model, private workspace, core dashboards and intelligence layers, first integrations where technically available, and a prioritized 30/90-day execution roadmap."},
+    {"q":"What is delivered within 72 hours?","a":"A first working version of the system once the required information and access are available. Scope is prioritized around the highest-value capabilities that can be implemented reliably within the initial installation."},
+    {"q":"Do we need to replace our existing tools?","a":"No. EXIOR is designed to work around the systems you already use and only introduces new components where they create a clear operational advantage."},
+    {"q":"Can EXIOR build custom automations and internal systems?","a":"Yes. Dashboards, integrations, agents and workflows are selected according to expected business value and technical feasibility."},
+    {"q":"What happens after the initial installation?","a":"You can keep the installed system and operate it internally, or extend EXIOR into continuous monitoring, prioritization and execution."}
+  ],
+  "final": {
+    "headline":"Install a better operating layer around your agency.",
+    "body":"Connect the signals you already have, add the intelligence you are missing and continuously prioritize the capabilities that create the most value.",
+    "cta":"Install EXIOR — US$500"
+  },
+  "footer":"Organizational intelligence and execution systems for companies operating in complex environments."
 }
