@@ -38,10 +38,13 @@ jobs:
           python -m http.server 8000 --directory _site >/tmp/exior-http.log 2>&1 &
           npx --yes playwright@1.55.0 install chromium
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-mobile.png
       - uses: actions/upload-artifact@v4
         with:
           name: visual-qa
-          path: exior-desktop.png
+          path: |
+            exior-desktop.png
+            exior-mobile.png
       - uses: actions/configure-pages@v5
         with:
           enablement: true
