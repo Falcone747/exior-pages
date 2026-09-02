@@ -14,9 +14,13 @@ sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='exior'" | grep 
 sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='exior_contact'" | grep -q 1 || sudo -u postgres createdb -O exior exior_contact
 curl -fsSL "$RAW/v3_engine.py" -o "$APP/v3_engine.py"
 curl -fsSL "$RAW/requirements-v3.txt" -o "$APP/requirements-v3.txt"
+systemctl stop exior-contact-indexer-v3.service 2>/dev/null || true
+rm -rf "$APP/venv-v3"
 python3 -m venv "$APP/venv-v3"
 "$APP/venv-v3/bin/pip" install --upgrade pip
 "$APP/venv-v3/bin/pip" install -r "$APP/requirements-v3.txt"
+"$APP/venv-v3/bin/pip" install 'h2>=4.1,<5'
+"$APP/venv-v3/bin/python" -c "import h2,httpx; print('HTTP2_DEPS_OK', h2.__version__, httpx.__version__)"
 "$APP/venv-v3/bin/python" -m playwright install chromium
 cat >/etc/systemd/system/exior-contact-indexer-v3.service <<'UNIT'
 [Unit]
