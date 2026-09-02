@@ -5,6 +5,7 @@ REPO=https://raw.githubusercontent.com/Falcone747/exior-pages/main/ops/contact-i
 mkdir -p "$APP"/{data,evidence,logs}
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-venv python3-pip curl ca-certificates sqlite3 libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 fonts-liberation
+systemctl stop exior-contact-sender.service 2>/dev/null || true
 curl -fsSL "$REPO/engine.py" -o "$APP/engine.py"
 curl -fsSL "$REPO/sender.py" -o "$APP/sender.py"
 curl -fsSL "$REPO/requirements.txt" -o "$APP/requirements.txt"
@@ -49,6 +50,10 @@ MemoryMax=4G
 [Install]
 WantedBy=multi-user.target
 UNIT
+# Retry only failures that occurred before submit was clicked.
+if [ -f "$APP/data/index.db" ]; then
+  sqlite3 "$APP/data/index.db" "UPDATE outreach_queue SET status='MESSAGE_READY' WHERE company_id IN (SELECT company_id FROM submissions WHERE status IN ('NO_MESSAGE_FIELD','NO_SUBMIT_BUTTON')); DELETE FROM submissions WHERE status IN ('NO_MESSAGE_FIELD','NO_SUBMIT_BUTTON');" || true
+fi
 systemctl daemon-reload
 systemctl enable exior-contact-indexer.service exior-contact-sender.service
 systemctl restart exior-contact-indexer.service
