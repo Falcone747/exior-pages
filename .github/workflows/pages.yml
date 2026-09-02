@@ -29,7 +29,10 @@ jobs:
           test -s _site/marketing-agencies/index.html
           test -s _site/marketing-agencies/agency.css
           grep -F 'https://buy.stripe.com/4gMbJ08rSdjl3Nx20R7IY00' _site/marketing-agencies/index.html
-          grep -F 'Install the operating system your agency is missing.' _site/marketing-agencies/index.html
+          grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
+          grep -F 'Turn your agency into an operating system.' _site/marketing-agencies/index.html
+          grep -F 'Install EXIOR — US$500' _site/marketing-agencies/index.html
+          ! grep -F 'INDEPENDENT MARKETING' _site/marketing-agencies/index.html
       - uses: actions/configure-pages@v5
         with:
           enablement: true
