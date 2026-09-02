@@ -37,6 +37,6 @@ f=s['faq']; parts.append(f'<section class="ag-section ag-faq"><div class="ag-she
 fc=s['finalCta']; parts.append(f'<section class="ag-final ag-light"><div class="ag-shell"><h2>{e(fc["headline"])}</h2><p>{e(fc["body"])}</p><b>{e(fc["price"])}</b>{buy(fc["cta"])}</div></section>')
 parts.append(f'<footer class="ag-footer ag-shell"><div><b>EXIOR</b><p>{e(s["footer"]["description"])}</p></div><nav><a href="mailto:{G["contactEmail"]}">{G["contactEmail"]}</a></nav><small>{e(G["copyright"])}</small></footer>{buy(h["cta"],"ag-mobile-buy")}</main></body></html>')
 (PAGE/'index.html').write_text(''.join(parts), encoding='utf-8')
-(OUT/'index.html').write_text('<!doctype html><meta http-equiv="refresh" content="0;url=marketing-agencies/">',encoding='utf-8')
+(OUT/'404.html').write_text('<!doctype html><meta charset="utf-8"><title>EXIOR</title><body style="margin:0;background:#050607;color:#fff;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh"><div><b style="letter-spacing:.25em">EXIOR</b></div></body>',encoding='utf-8')
 (OUT/'CNAME').write_text('exior.io\n',encoding='utf-8')
 print('built', PAGE/'index.html')
