@@ -1,0 +1,10 @@
+{
+  "command_id": "init-0001",
+  "action": "idle",
+  "mode": "fast",
+  "batch_size": 0,
+  "workers": 4,
+  "max_routes": 8,
+  "model": "qwen3:1.7b",
+  "note": "Revenue OS remote control. Change command_id for every new command."
+}
