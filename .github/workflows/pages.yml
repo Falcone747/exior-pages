@@ -25,46 +25,46 @@ jobs:
       - name: Build landing
         run: |
           python scripts/build_marketing_pages.py
-          mkdir -p _site/onboarding _site/ai-agent-sprint
+          mkdir -p _site/onboarding _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting
           cp app/onboarding/index.html _site/onboarding/index.html
           cp app/ai-agent-sprint/index.html _site/ai-agent-sprint/index.html
-      - name: Validate landing and onboarding
+          cp app/ai-agent-agencies/index.html _site/ai-agent-agencies/index.html
+          cp app/ai-agent-recruiting/index.html _site/ai-agent-recruiting/index.html
+          cp app/ai-agent-accounting/index.html _site/ai-agent-accounting/index.html
+      - name: Validate landings
         run: |
           test -s _site/marketing-agencies/index.html
           test -s _site/marketing-agencies/agency.css
           test -s _site/marketing-agencies/premium.css
           test -s _site/onboarding/index.html
           test -s _site/ai-agent-sprint/index.html
-          grep -F 'https://buy.stripe.com/4gM9AS5fGdjl4RBeND7IY01' _site/marketing-agencies/index.html
+          test -s _site/ai-agent-agencies/index.html
+          test -s _site/ai-agent-recruiting/index.html
+          test -s _site/ai-agent-accounting/index.html
           grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
-          grep -F 'Install an intelligence layer around your agency.' _site/marketing-agencies/index.html
-          grep -F 'Install EXIOR — US$500' _site/marketing-agencies/index.html
-          grep -F 'LIVE DECISION LAYER' _site/marketing-agencies/index.html
-          grep -F 'Payment confirmed' _site/onboarding/index.html
-          grep -F 'Start onboarding' _site/onboarding/index.html
           grep -F 'AI Agent Sprint' _site/ai-agent-sprint/index.html
-          grep -F 'One custom AI agent. US$500.' _site/ai-agent-sprint/index.html
-          ! grep -F 'INDEPENDENT MARKETING' _site/marketing-agencies/index.html
+          grep -F 'AI AGENT FOR AGENCIES' _site/ai-agent-agencies/index.html
+          grep -F 'RECRUITING AGENT' _site/ai-agent-recruiting/index.html
+          grep -F 'ACCOUNTING OPS AGENT' _site/ai-agent-accounting/index.html
+          ! grep -F 'AI AGENT FOR AGENCIES' _site/marketing-agencies/index.html
       - name: Render visual QA
         run: |
           python -m http.server 8000 --directory _site >/tmp/exior-http.log 2>&1 &
           npx --yes playwright@1.55.0 install chromium
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-desktop.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1000" --full-page http://127.0.0.1:8000/onboarding/ onboarding-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/onboarding/ onboarding-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/ai-agent-sprint/ ai-agent-sprint-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/ai-agent-sprint/ ai-agent-sprint-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/ai-agent-agencies/ ai-agent-agencies-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/ai-agent-recruiting/ ai-agent-recruiting-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/ai-agent-accounting/ ai-agent-accounting-desktop.png
       - uses: actions/upload-artifact@v4
         with:
           name: visual-qa
           path: |
             exior-desktop.png
             exior-mobile.png
-            onboarding-desktop.png
-            onboarding-mobile.png
-            ai-agent-sprint-desktop.png
-            ai-agent-sprint-mobile.png
+            ai-agent-agencies-desktop.png
+            ai-agent-recruiting-desktop.png
+            ai-agent-accounting-desktop.png
       - uses: actions/configure-pages@v5
         with:
           enablement: true
