@@ -1,9 +1,13 @@
 {
-  "command_id": "prospect-ai-agent-500-20260903-02",
+  "command_id": "prospect-ai-agent-us-500-20260903-03",
   "action": "prospect_build",
   "limit": 500,
   "offer_url": "https://exior.io/ai-agent",
-  "segments": ["marketing_agency","recruiting","accounting","property_management","b2b_services"],
-  "objective": "Build the top 500 fastest-buying prospects for the $500 Custom AI Agent offer. FIRST use the VPS existing index.db of already-discovered companies/forms; SECOND expand from public structured B2B directories only if needed. Require an active site and a currently valid contact/general inquiry form. Deduplicate by domain. Rank on owner/operator accessibility, hiring/growth, CRM/automation stack, repetitive operational workload, evidence of client capacity, segment fit and form quality. Output CSV/JSON only; do not send outreach.",
-  "note": "Use ready databases first, then public directories. Revalidate every form before ranking. No outreach."
+  "country": "United States",
+  "segments": ["marketing_agency","recruiting","accounting"],
+  "priority_order": ["marketing_agency","recruiting","accounting"],
+  "objective": "Build exactly the best available 500 United States prospects for the $500 Custom AI Agent offer. Use the VPS existing index.db first. Keep only active companies with a currently valid contact/general inquiry form and output the exact form URL. Prioritize marketing agencies, then recruiting/staffing, then accounting/bookkeeping. Prefer owner/founder-led teams with visible growth, existing CRM/automation stack, repetitive operational workload and evidence of client capacity. Deduplicate by domain. Do not send outreach.",
+  "output_csv": "/opt/exior-contact-indexer/data/ai-agent-us-top-500.csv",
+  "output_json": "/opt/exior-contact-indexer/data/ai-agent-us-top-500.json",
+  "note": "US only. Exact validated form URL required. Shortlist only, no sending."
 }
