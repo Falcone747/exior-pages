@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "default_offer": "ai-agent-sprint",
+  "offers": {
+    "marketing_agency": {
+      "landing": "https://exior.io/ai-agent-agencies",
+      "price_usd": 500,
+      "subject": "One AI workflow for your agency in 72h",
+      "message": "Hi — we build one custom AI agent around a repetitive agency workflow and deliver the first working version in 72 hours. Typical examples: lead triage, client reporting, CRM follow-up or operations monitoring. Fixed sprint: US$500. No migration and no long AI project.\n\nhttps://exior.io/ai-agent-agencies\n\n— Guillaume, EXIOR"
+    },
+    "recruiting_staffing": {
+      "landing": "https://exior.io/ai-agent-recruiting",
+      "price_usd": 500,
+      "subject": "Automate one recruiting bottleneck in 72h",
+      "message": "Hi — we build one custom AI agent around a recruiting workflow: screening support, sourcing research, interview prep or follow-up operations. First working version in 72 hours, fixed US$500 sprint, built around your existing ATS/CRM rather than replacing it.\n\nhttps://exior.io/ai-agent-recruiting\n\n— Guillaume, EXIOR"
+    },
+    "accounting_bookkeeping": {
+      "landing": "https://exior.io/ai-agent-accounting",
+      "price_usd": 500,
+      "subject": "Remove one recurring accounting ops task in 72h",
+      "message": "Hi — we build one custom AI agent around a narrow accounting operations workflow such as document intake, client follow-up or reporting preparation. We keep professional judgment with your team and automate the repetitive layer around your existing tools. First working version in 72 hours, fixed US$500 sprint.\n\nhttps://exior.io/ai-agent-accounting\n\n— Guillaume, EXIOR"
+    }
+  },
+  "conversion_rules": {
+    "one_problem_per_message": true,
+    "one_primary_cta": true,
+    "show_price_in_first_touch": true,
+    "max_claims_without_evidence": 0,
+    "prefer_specific_examples": true,
+    "avoid_vague_terms": ["transformation", "intelligence layer", "revolutionize", "game-changing"],
+    "success_metric": "human_reply_or_payment",
+    "technical_submission_is_not_conversion": true
+  }
+}
