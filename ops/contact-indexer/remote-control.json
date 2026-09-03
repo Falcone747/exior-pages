@@ -1,10 +1,10 @@
 {
-  "command_id": "init-0001",
-  "action": "idle",
+  "command_id": "fast-200-20260903-0249",
+  "action": "batch",
   "mode": "fast",
-  "batch_size": 0,
-  "workers": 4,
+  "batch_size": 200,
+  "workers": 6,
   "max_routes": 8,
   "model": "qwen3:1.7b",
-  "note": "Revenue OS remote control. Change command_id for every new command."
+  "note": "Remote FAST batch requested from ChatGPT. Consume MESSAGE_READY only."
 }
