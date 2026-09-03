@@ -1,0 +1,54 @@
+name: Rename AI Teammate to AI Agent
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/rename-ai-agent.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Replace wording only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('app/ai-teammate/index.html')
+          s = p.read_text()
+          replacements = [
+              ('CUSTOM AI TEAMMATES', 'CUSTOM AI AGENTS'),
+              ('CUSTOM AI TEAMMATE', 'CUSTOM AI AGENT'),
+              ('Custom AI Teammates', 'Custom AI Agents'),
+              ('Custom AI Teammate', 'Custom AI Agent'),
+              ('AI teammates', 'AI agents'),
+              ('AI teammate', 'AI agent'),
+              ('EXIOR Teammate', 'EXIOR AI Agent'),
+              ('your teammate', 'your AI agent'),
+              ('Your teammate', 'Your AI agent'),
+              ('my teammate', 'my AI agent'),
+              ('My teammate', 'My AI agent'),
+              ('teammates', 'agents'),
+              ('teammate', 'agent'),
+              ('Teammates', 'Agents'),
+              ('Teammate', 'Agent'),
+          ]
+          for a,b in replacements:
+              s = s.replace(a,b)
+          p.write_text(s)
+          PY
+      - name: Commit wording change
+        run: |
+          git config user.name "EXIOR Revenue OS"
+          git config user.email "actions@users.noreply.github.com"
+          git add app/ai-teammate/index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Rename AI teammate copy to AI agent"
+          git push
