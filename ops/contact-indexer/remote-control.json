@@ -1,9 +1,9 @@
 {
-  "command_id": "prospect-ai-agent-500-20260903-01",
+  "command_id": "prospect-ai-agent-500-20260903-02",
   "action": "prospect_build",
   "limit": 500,
   "offer_url": "https://exior.io/ai-agent",
   "segments": ["marketing_agency","recruiting","accounting","property_management","b2b_services"],
-  "objective": "Rank the 500 companies most likely to buy a $500 custom AI agent quickly. Prioritize visible growth/hiring, operational workload, existing SaaS/CRM/automation stack, owner-led or short decision cycles, clear repetitive workflows, and ability to pay. Deduplicate by domain. Output CSV and JSON only; do not send outreach in this command.",
-  "note": "Revenue-first prospect build. Generate shortlist only, no sending."
+  "objective": "Build the top 500 fastest-buying prospects for the $500 Custom AI Agent offer. FIRST use the VPS existing index.db of already-discovered companies/forms; SECOND expand from public structured B2B directories only if needed. Require an active site and a currently valid contact/general inquiry form. Deduplicate by domain. Rank on owner/operator accessibility, hiring/growth, CRM/automation stack, repetitive operational workload, evidence of client capacity, segment fit and form quality. Output CSV/JSON only; do not send outreach.",
+  "note": "Use ready databases first, then public directories. Revalidate every form before ranking. No outreach."
 }
