@@ -1,4 +1,4 @@
-name: Rename AI Teammate to AI Agent
+name: Rebuild EXIOR AI Agent landing
 
 on:
   push:
@@ -11,44 +11,143 @@ permissions:
   contents: write
 
 jobs:
-  rename:
+  rebuild:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Replace wording only
+      - name: Keep design and replace commercial body
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('app/ai-teammate/index.html')
           s = p.read_text()
-          replacements = [
-              ('CUSTOM AI TEAMMATES', 'CUSTOM AI AGENTS'),
-              ('CUSTOM AI TEAMMATE', 'CUSTOM AI AGENT'),
-              ('Custom AI Teammates', 'Custom AI Agents'),
-              ('Custom AI Teammate', 'Custom AI Agent'),
-              ('AI teammates', 'AI agents'),
-              ('AI teammate', 'AI agent'),
-              ('EXIOR Teammate', 'EXIOR AI Agent'),
-              ('your teammate', 'your AI agent'),
-              ('Your teammate', 'Your AI agent'),
-              ('my teammate', 'my AI agent'),
-              ('My teammate', 'My AI agent'),
-              ('teammates', 'agents'),
-              ('teammate', 'agent'),
-              ('Teammates', 'Agents'),
-              ('Teammate', 'Agent'),
-          ]
-          for a,b in replacements:
-              s = s.replace(a,b)
-          p.write_text(s)
+
+          s = re.sub(r'<title>.*?</title>', '<title>EXIOR — AI Workforce for Your Company</title>', s, count=1)
+          s = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="For $500, EXIOR builds your company memory, connects your business context, deploys analyst and strategy agents, and maps the execution agents worth deploying next.">', s, count=1)
+
+          marker = '</style></head><body>'
+          if marker not in s:
+              raise SystemExit('Expected style/body marker not found')
+          head = s.split(marker, 1)[0] + marker
+
+          checkout = 'https://buy.stripe.com/00w14m5fG4MP3NxcFv7IY02'
+          body = f'''<div class="shell">
+          <nav class="nav">
+            <div class="brand">EXIOR</div>
+            <div class="links"><a href="#work">What you get</a><a href="#how">How it works</a><a href="#agents">Your AI workforce</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+            <a class="navbtn" href="{checkout}">Build EXIOR — $500</a>
+          </nav>
+
+          <section class="hero">
+            <div>
+              <div class="tag">◉ EXIOR INITIAL DEPLOYMENT</div>
+              <h1>Give your company a <span class="accent">second workforce.</span></h1>
+              <p class="sub">For $500, EXIOR learns your company, connects the context that matters and deploys a coordinated layer of analyst and strategy agents around your business.</p>
+              <div class="proofs"><span>Company memory</span><span>Analyst + strategy agents</span><span>Custom operating dashboard</span></div>
+              <div class="ctas"><a class="btn primary" href="{checkout}">Build EXIOR for my company — $500 →</a><a class="btn secondary" href="#work">See exactly what you get</a></div>
+              <div class="micro">◉ $500 one-time initial deployment. Execution modules are scoped separately.</div>
+            </div>
+            <div class="demo">
+              <div class="demotop"><div class="xorb">X</div><div><b>EXIOR — Company Intelligence</b><div class="online">● Active</div></div></div>
+              <div class="demobody">
+                <div class="msg">Your company model is active. Here is what deserves attention now.</div>
+                <div class="dash">
+                  <div class="row"><span>Business context connected</span><b>LIVE</b></div>
+                  <div class="row"><span>Priority opportunities found</span><b>12</b></div>
+                  <div class="row"><span>High-priority changes</span><b>3</b></div>
+                  <div class="row"><span>Execution modules ready to scope</span><b>4</b></div>
+                </div>
+                <div class="msg" style="margin-top:12px">Highest priority: remove repetitive client-reporting work from your team.</div>
+                <div class="input"><span>Ask EXIOR about your company...</span><span class="send">↑</span></div>
+              </div>
+            </div>
+          </section>
+          </div>
+
+          <div class="toolsbar"><div class="toolsinner"><span>Built around the tools you already use</span><span class="tool"><i class="gmail"></i>Gmail</span><span class="tool"><i class="drive"></i>Drive</span><span class="tool"><i class="slack"></i>Slack</span><span class="tool"><i class="notion"></i>Notion</span><span class="tool"><i class="hubspot"></i>HubSpot</span><span class="tool"><i class="airtable"></i>Airtable</span><span>+ your business systems</span></div></div>
+
+          <div class="shell">
+          <section class="section" id="work">
+            <h2>Not one chatbot. <span class="accent">A system built around your company.</span></h2>
+            <p class="lead">EXIOR gives every specialist agent the same company context, so analysis, strategy and future execution stop living in disconnected tools and conversations.</p>
+            <div class="cards">
+              <div class="card"><div class="icon i1">◎</div><h3>Company Memory</h3><p>Your business context, rules, documents, priorities and operating knowledge become a shared memory for EXIOR.</p><div class="mini">Learn once. Reuse everywhere.</div></div>
+              <div class="card"><div class="icon i2">◫</div><h3>Connected Context</h3><p>We connect the useful data and systems available to your deployment so EXIOR works from your real business context.</p><div class="mini">Tools + data + business rules.</div></div>
+              <div class="card"><div class="icon i3">↗</div><h3>Business Analysis</h3><p>Analyst agents examine your company, workflows and signals to surface bottlenecks, risks and opportunities.</p><div class="mini">Find what deserves attention.</div></div>
+              <div class="card"><div class="icon i4">◇</div><h3>Strategy Agents</h3><p>Strategy agents compare possible actions and help identify where time, money and automation can create the most leverage.</p><div class="mini">Priorities before tools.</div></div>
+              <div class="card"><div class="icon i5">▤</div><h3>Custom Operating View</h3><p>A private dashboard shows what EXIOR knows, what changed, what matters now and what can be deployed next.</p><div class="mini">Your company, made legible.</div></div>
+              <div class="card"><div class="icon i6">⚡</div><h3>Execution Blueprint</h3><p>EXIOR maps the business agents, automations, integrations or custom modules worth deploying after the initial setup.</p><div class="mini">Deploy only what creates value.</div></div>
+            </div>
+          </section>
+
+          <section class="section" id="how">
+            <h2>$500 turns your company into an <span class="accent">EXIOR-ready system.</span></h2>
+            <p class="lead">The initial deployment is intentionally simple. First we understand the company. Then we identify what should be automated or augmented. Only then do we deploy execution capacity.</p>
+            <div class="three">
+              <div class="step"><div class="stepnum">1</div><h3>Connect & learn</h3><p>We structure your business context and connect the useful information available for the deployment.</p><div class="miniui"><span class="pill">Company</span><span class="pill">Data</span><span class="pill">Tools</span><span class="pill purple">Shared memory</span></div></div>
+              <div class="step"><div class="stepnum">2</div><h3>Analyze & prioritize</h3><p>Analyst and strategy agents examine the business and rank the most valuable areas to improve.</p><div class="miniui"><span class="pill">Analyze</span><span class="pill">Compare</span><span class="pill">Prioritize</span><span class="pill purple">Recommend</span></div></div>
+              <div class="step"><div class="stepnum">3</div><h3>Deploy what matters</h3><p>You receive a clear proposal for the execution modules worth activating. Start with one workflow or expand across the company.</p><div class="miniui"><span class="pill">Sales</span><span class="pill">Ops</span><span class="pill">Reporting</span><span class="pill purple">EXIOR Global</span></div></div>
+            </div>
+          </section>
+
+          <section class="context" id="agents">
+            <div>
+              <h2>Your company gets specialists. <span class="accent">They share one brain.</span></h2>
+              <p class="lead">Instead of isolated AI tools, EXIOR coordinates specialized capabilities around one company memory and one operating context.</p>
+              <div class="bullets"><span>Business analyst agents</span><span>Strategy agents</span><span>Research agents</span><span>Technology agents</span><span>Custom execution agents for real workflows</span></div>
+            </div>
+            <div class="orbit"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core">X</div><div class="node n1">ANALYZE</div><div class="node n2">EXECUTE</div><div class="node n3">STRATEGY</div><div class="node n4">TECH</div></div>
+          </section>
+
+          <section class="section">
+            <h2>Then EXIOR starts doing the <span class="accent">actual work.</span></h2>
+            <p class="lead">Execution is modular. You do not buy a giant transformation project. You activate the business capabilities that make economic sense.</p>
+            <div class="cards">
+              <div class="card"><div class="icon i1">↗</div><h3>Sales & CRM</h3><p>Lead qualification, research, CRM updates, follow-up preparation, pipeline operations and reporting.</p></div>
+              <div class="card"><div class="icon i2">▤</div><h3>Operations</h3><p>Recurring coordination, workflow routing, status updates, document handling and internal operations.</p></div>
+              <div class="card"><div class="icon i3">◉</div><h3>Client Delivery</h3><p>Reporting, research, onboarding, account intelligence and repeatable delivery work.</p></div>
+              <div class="card"><div class="icon i4">⌕</div><h3>Research & Intelligence</h3><p>Market research, competitor monitoring, information synthesis and decision support.</p></div>
+              <div class="card"><div class="icon i5">⚙</div><h3>Technology</h3><p>Integrations, internal tools, data flows and specialized AI capabilities built around the result.</p></div>
+              <div class="card"><div class="icon i6">＋</div><h3>Your Workflow</h3><p>If your team repeatedly moves information, makes the same analysis or coordinates the same process, EXIOR can evaluate it.</p></div>
+            </div>
+          </section>
+
+          <section class="section pricingwrap" id="pricing">
+            <h2>Start for $500. <span class="accent">Expand only where it pays.</span></h2>
+            <p class="lead">One clear entry point. No need to redesign your whole company before EXIOR can create value.</p>
+            <div class="pricing">
+              <div class="pricecard featured"><div class="ptop"><b>EXIOR INITIAL DEPLOYMENT</b><span>START HERE</span></div><div class="price">$500 <span>one-time</span></div><p>Build the intelligence layer around your company.</p><ul><li>Company analysis</li><li>Shared company memory</li><li>Connected business context</li><li>Analyst + strategy agents</li><li>Custom operating dashboard</li><li>Execution opportunity map</li></ul><a class="btn primary" href="{checkout}">Build EXIOR — $500 →</a></div>
+              <div class="pricecard"><div class="ptop"><b>EXECUTION MODULE</b><span>CUSTOM QUOTE</span></div><div class="price">1 <span>business capability</span></div><p>Deploy one bounded capability around a real workflow.</p><ul><li>One clear business outcome</li><li>Custom execution agent or workflow</li><li>Required integrations</li><li>Defined scope</li><li>Deployment + handoff</li></ul><a class="btn secondary" href="{checkout}">Start with the $500 deployment</a></div>
+              <div class="pricecard"><div class="ptop"><b>EXIOR GLOBAL</b><span>CUSTOM</span></div><div class="price">∞ <span>company-wide layer</span></div><p>Expand EXIOR across several functions and operating systems.</p><ul><li>Multiple business modules</li><li>Shared company intelligence</li><li>Cross-functional agents</li><li>Continuous operating context</li><li>Ongoing expansion</li></ul><a class="btn secondary" href="{checkout}">Build the foundation first</a></div>
+            </div>
+          </section>
+
+          <section class="faq" id="faq">
+            <h2>Simple questions. <span class="accent">Clear answers.</span></h2>
+            <details><summary>What exactly do I get for $500?</summary><p>Your initial EXIOR deployment: company analysis, a structured company memory, connected business context, analyst and strategy agents, a custom operating view and a prioritized execution blueprint.</p></details>
+            <details><summary>Does $500 include every execution agent?</summary><p>No. The $500 deployment builds the intelligence foundation and identifies which execution capabilities are worth deploying. Business execution modules are scoped and quoted separately.</p></details>
+            <details><summary>Is EXIOR just another chatbot?</summary><p>No. EXIOR is built around shared company context and coordinated specialist capabilities. Chat is only one possible interface to the system.</p></details>
+            <details><summary>Can we start with one department?</summary><p>Yes. You can deploy one isolated execution module first, then expand only if the value is clear.</p></details>
+            <details><summary>What can an execution module do?</summary><p>Typical modules can support sales operations, reporting, research, CRM workflows, onboarding, client operations, data handling, internal tools and other repetitive digital work.</p></details>
+            <details><summary>Do we need to replace our existing tools?</summary><p>No. EXIOR can work around the systems you already use and determine where connecting, automating, replacing or adding a capability makes sense.</p></details>
+          </section>
+
+          <div class="final"><div><h3>See what EXIOR would build around your company.</h3><p>Start with the $500 intelligence deployment. Add execution only where the value is clear.</p></div><a class="btn primary" href="{checkout}">Build EXIOR for my company — $500 →</a></div>
+
+          <footer class="footer"><div>© 2026 EXIOR · The augmented enterprise.</div><div class="social"><span>X</span><span>in</span></div></footer>
+          </div>'''
+
+          p.write_text(head + body + '</body></html>')
           PY
-      - name: Commit wording change
+      - name: Commit landing rebuild
         run: |
           git config user.name "EXIOR Revenue OS"
           git config user.email "actions@users.noreply.github.com"
           git add app/ai-teammate/index.html
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Rename AI teammate copy to AI agent"
+          git commit -m "Rebuild EXIOR AI Agent landing around $500 initial deployment"
           git push
