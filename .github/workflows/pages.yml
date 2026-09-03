@@ -25,8 +25,9 @@ jobs:
       - name: Build landing
         run: |
           python scripts/build_marketing_pages.py
-          mkdir -p _site/onboarding _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting
+          mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting
           cp app/onboarding/index.html _site/onboarding/index.html
+          cp app/ai-agent/index.html _site/ai-agent/index.html
           cp app/ai-teammate/index.html _site/ai-teammate/index.html
           cp app/custom-ai-agent/index.html _site/custom-ai-agent/index.html
           cp app/ai-agent-sprint/index.html _site/ai-agent-sprint/index.html
@@ -39,16 +40,15 @@ jobs:
           test -s _site/marketing-agencies/agency.css
           test -s _site/marketing-agencies/premium.css
           test -s _site/onboarding/index.html
+          test -s _site/ai-agent/index.html
           test -s _site/ai-teammate/index.html
           test -s _site/custom-ai-agent/index.html
           test -s _site/ai-agent-agencies/index.html
           test -s _site/ai-agent-recruiting/index.html
           test -s _site/ai-agent-accounting/index.html
           grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
-          grep -F 'CUSTOM AI TEAMMATE' _site/ai-teammate/index.html
-          grep -F 'Get My AI Teammate — $500' _site/ai-teammate/index.html
+          grep -F '/ai-teammate/' _site/ai-agent/index.html
           ! grep -Fi 'sprint' _site/ai-teammate/index.html
-          grep -F '/ai-teammate/' _site/custom-ai-agent/index.html
           ! grep -F 'CUSTOM AI TEAMMATE' _site/marketing-agencies/index.html
       - name: Render visual QA
         run: |
