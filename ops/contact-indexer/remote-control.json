@@ -1,10 +1,9 @@
 {
-  "command_id": "fast-200-20260903-0249",
-  "action": "batch",
-  "mode": "fast",
-  "batch_size": 200,
-  "workers": 6,
-  "max_routes": 8,
-  "model": "qwen3:1.7b",
-  "note": "Remote FAST batch requested from ChatGPT. Consume MESSAGE_READY only."
+  "command_id": "prospect-ai-agent-500-20260903-01",
+  "action": "prospect_build",
+  "limit": 500,
+  "offer_url": "https://exior.io/ai-agent",
+  "segments": ["marketing_agency","recruiting","accounting","property_management","b2b_services"],
+  "objective": "Rank the 500 companies most likely to buy a $500 custom AI agent quickly. Prioritize visible growth/hiring, operational workload, existing SaaS/CRM/automation stack, owner-led or short decision cycles, clear repetitive workflows, and ability to pay. Deduplicate by domain. Output CSV and JSON only; do not send outreach in this command.",
+  "note": "Revenue-first prospect build. Generate shortlist only, no sending."
 }
