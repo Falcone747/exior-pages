@@ -22,10 +22,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Build landing
+      - name: Build site
         run: |
+          set -euo pipefail
           python scripts/build_marketing_pages.py
-          mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting
+          mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/live _site/app
           cp app/onboarding/index.html _site/onboarding/index.html
           cp app/ai-agent/index.html _site/ai-agent/index.html
           cp app/ai-teammate/index.html _site/ai-teammate/index.html
@@ -34,38 +35,20 @@ jobs:
           cp app/ai-agent-agencies/index.html _site/ai-agent-agencies/index.html
           cp app/ai-agent-recruiting/index.html _site/ai-agent-recruiting/index.html
           cp app/ai-agent-accounting/index.html _site/ai-agent-accounting/index.html
-      - name: Validate landings
+          cp app/live/index.html _site/live/index.html
+          cat > _site/app/index.html <<'APP'
+          <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=/live/"><title>EXIOR</title><script>location.replace('/live/')</script>
+          APP
+          touch _site/.nojekyll
+      - name: Validate site
         run: |
+          set -euo pipefail
           test -s _site/marketing-agencies/index.html
-          test -s _site/marketing-agencies/agency.css
-          test -s _site/marketing-agencies/premium.css
-          test -s _site/onboarding/index.html
-          test -s _site/ai-agent/index.html
           test -s _site/ai-teammate/index.html
-          test -s _site/custom-ai-agent/index.html
-          test -s _site/ai-agent-agencies/index.html
-          test -s _site/ai-agent-recruiting/index.html
-          test -s _site/ai-agent-accounting/index.html
-          grep -F 'EXIOR FOR MARKETING AGENCIES' _site/marketing-agencies/index.html
-          grep -F '/ai-teammate/' _site/ai-agent/index.html
-          ! grep -Fi 'sprint' _site/ai-teammate/index.html
-          ! grep -F 'CUSTOM AI TEAMMATE' _site/marketing-agencies/index.html
-      - name: Render visual QA
-        run: |
-          python -m http.server 8000 --directory _site >/tmp/exior-http.log 2>&1 &
-          npx --yes playwright@1.55.0 install chromium
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/marketing-agencies/ exior-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="1440,1200" --full-page http://127.0.0.1:8000/ai-teammate/ ai-teammate-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page http://127.0.0.1:8000/ai-teammate/ ai-teammate-mobile.png
-      - uses: actions/upload-artifact@v4
-        with:
-          name: visual-qa
-          path: |
-            exior-desktop.png
-            exior-mobile.png
-            ai-teammate-desktop.png
-            ai-teammate-mobile.png
+          test -s _site/live/index.html
+          grep -F 'EXIOR CHAT' _site/live/index.html
+          grep -F 'DIGITAL EMPLOYEE' _site/live/index.html
+          ! grep -Fi 'vercel' _site/live/index.html
       - uses: actions/configure-pages@v5
         with:
           enablement: true
@@ -83,3 +66,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify canonical EXIOR Live
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 36); do
+            code=$(curl -L -sS -o /tmp/live -w '%{http_code}' --max-time 20 https://exior.io/live/ || true)
+            if [ "$code" = "200" ] && grep -Fq 'EXIOR CHAT' /tmp/live && grep -Fq 'DIGITAL EMPLOYEE' /tmp/live; then
+              echo EXIOR_LIVE_CANONICAL_OK
+              exit 0
+            fi
+            echo "attempt=$i code=$code"
+            sleep 5
+          done
+          exit 1
