@@ -28,7 +28,7 @@ jobs:
           python scripts/build_marketing_pages.py
           mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/live _site/app
           cp app/onboarding/index.html _site/onboarding/index.html
-          cp app/ai-agent/index.html _site/ai-agent/index.html
+          cp app/ai-teammate/index.html _site/ai-agent/index.html
           cp app/ai-teammate/index.html _site/ai-teammate/index.html
           cp app/custom-ai-agent/index.html _site/custom-ai-agent/index.html
           cp app/ai-agent-sprint/index.html _site/ai-agent-sprint/index.html
@@ -44,8 +44,10 @@ jobs:
         run: |
           set -euo pipefail
           test -s _site/marketing-agencies/index.html
+          test -s _site/ai-agent/index.html
           test -s _site/ai-teammate/index.html
           test -s _site/live/index.html
+          ! grep -Fq 'url=/ai-teammate/' _site/ai-agent/index.html
           grep -F 'EXIOR CHAT' _site/live/index.html
           grep -F 'DIGITAL EMPLOYEE' _site/live/index.html
           ! grep -Fi 'vercel' _site/live/index.html
