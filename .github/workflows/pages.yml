@@ -27,6 +27,8 @@ jobs:
           set -euo pipefail
           python scripts/build_marketing_pages.py
           mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/live _site/app
+          cp app/home/index.html _site/index.html
+          cp app/home/home.css _site/home.css
           cp app/onboarding/index.html _site/onboarding/index.html
           cp app/ai-teammate/index.html _site/ai-agent/index.html
           cp app/ai-teammate/index.html _site/ai-teammate/index.html
@@ -37,15 +39,19 @@ jobs:
           cp app/ai-agent-accounting/index.html _site/ai-agent-accounting/index.html
           cp app/live/index.html _site/live/index.html
           cat > _site/app/index.html <<'APP'
-          <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=/live/"><title>EXIOR</title><script>location.replace('/live/')</script>
+          <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=https://app.exior.io/login"><title>EXIOR</title><script>location.replace('https://app.exior.io/login')</script>
           APP
           touch _site/.nojekyll
       - name: Validate site
         run: |
           set -euo pipefail
+          test -s _site/index.html
+          test -s _site/home.css
+          grep -Fq 'Your company.' _site/index.html
+          grep -Fq 'EXIOR OS' _site/index.html
+          grep -Fq 'Run EXIOR X-Ray' _site/index.html
           test -s _site/marketing-agencies/index.html
           test -s _site/ai-agent/index.html
-          test -s _site/ai-teammate/index.html
           test -s _site/live/index.html
           ! grep -Fq 'url=/ai-teammate/' _site/ai-agent/index.html
           grep -F 'EXIOR CHAT' _site/live/index.html
@@ -70,13 +76,13 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Verify canonical EXIOR Live
+      - name: Verify canonical EXIOR sales page
         run: |
           set -euo pipefail
           for i in $(seq 1 36); do
-            code=$(curl -L -sS -o /tmp/live -w '%{http_code}' --max-time 20 https://exior.io/live/ || true)
-            if [ "$code" = "200" ] && grep -Fq 'EXIOR CHAT' /tmp/live && grep -Fq 'DIGITAL EMPLOYEE' /tmp/live; then
-              echo EXIOR_LIVE_CANONICAL_OK
+            code=$(curl -L -sS -o /tmp/home -w '%{http_code}' --max-time 20 https://exior.io/ || true)
+            if [ "$code" = "200" ] && grep -Fq 'Your company.' /tmp/home && grep -Fq 'EXIOR OS' /tmp/home; then
+              echo EXIOR_HOME_CANONICAL_OK
               exit 0
             fi
             echo "attempt=$i code=$code"
