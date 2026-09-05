@@ -7,23 +7,14 @@ RUNNER_DIR="/opt/exior-actions-runner"
 RUNNER_LABEL="exior-vps"
 TOKEN="${1:-}"
 
-if [[ $EUID -ne 0 ]]; then
-  echo "Run as root." >&2
-  exit 1
-fi
-if [[ -z "$TOKEN" ]]; then
-  echo "Usage: bash install-exior-vps-runner.sh <GITHUB_RUNNER_REGISTRATION_TOKEN>" >&2
-  exit 2
-fi
+if [[ $EUID -ne 0 ]]; then echo "Run as root." >&2; exit 1; fi
+if [[ -z "$TOKEN" ]]; then echo "Usage: bash install-exior-vps-runner.sh <TOKEN>" >&2; exit 2; fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y curl jq tar ca-certificates git sudo
 
-if ! id "$RUNNER_USER" >/dev/null 2>&1; then
-  useradd --create-home --shell /bin/bash "$RUNNER_USER"
-fi
-
+id "$RUNNER_USER" >/dev/null 2>&1 || useradd --create-home --shell /bin/bash "$RUNNER_USER"
 mkdir -p "$RUNNER_DIR"
 chown -R "$RUNNER_USER:$RUNNER_USER" "$RUNNER_DIR"
 
@@ -44,12 +35,15 @@ SUDOERS
 chmod 440 /etc/sudoers.d/exiorrunner
 visudo -cf /etc/sudoers.d/exiorrunner
 
-HOST_LABEL="$(hostname | sed 's/[^A-Za-z0-9._-]/-/g')"
+# Fixed stable runner name: no locale-sensitive tr expression.
+HOST_LABEL="$(hostname)"
+RUNNER_NAME="exior-vps-${HOST_LABEL}"
+
 cd "$RUNNER_DIR"
 sudo -u "$RUNNER_USER" ./config.sh \
   --url "$REPO_URL" \
   --token "$TOKEN" \
-  --name "exior-vps-${HOST_LABEL}" \
+  --name "$RUNNER_NAME" \
   --labels "$RUNNER_LABEL" \
   --work _work \
   --unattended \
@@ -62,6 +56,6 @@ sleep 3
 
 echo
 echo "EXIOR_VPS_RUNNER_READY"
-echo "Runner: exior-vps-${HOST_LABEL}"
+echo "Runner: $RUNNER_NAME"
 echo "Repo:   $REPO_URL"
 echo "Label:  $RUNNER_LABEL"
