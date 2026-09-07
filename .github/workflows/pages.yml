@@ -47,9 +47,11 @@ jobs:
           set -euo pipefail
           test -s _site/index.html
           test -s _site/home.css
-          grep -Fq 'Your company.' _site/index.html
-          grep -Fq 'EXIOR OS' _site/index.html
-          grep -Fq 'Run EXIOR X-Ray' _site/index.html
+          grep -Fq 'Your company, understood.' _site/index.html
+          grep -Fq 'Describe the company.' _site/index.html
+          grep -Fq 'Start with the amount of EXIOR you need.' _site/index.html
+          grep -Fq 'meta name="robots" content="index,follow"' _site/index.html
+          ! grep -Fq 'Run EXIOR X-Ray' _site/index.html
           test -s _site/marketing-agencies/index.html
           test -s _site/ai-agent/index.html
           test -s _site/live/index.html
@@ -76,16 +78,23 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Verify canonical EXIOR sales page
+      - name: Verify canonical EXIOR Hostinger-structured homepage
         run: |
           set -euo pipefail
           for i in $(seq 1 36); do
-            code=$(curl -L -sS -o /tmp/home -w '%{http_code}' --max-time 20 https://exior.io/ || true)
-            if [ "$code" = "200" ] && grep -Fq 'Your company.' /tmp/home && grep -Fq 'EXIOR OS' /tmp/home; then
-              echo EXIOR_HOME_CANONICAL_OK
+            code=$(curl -L -sS -o /tmp/home -w '%{http_code}' --max-time 20 "https://exior.io/?release=${GITHUB_SHA}" || true)
+            if [ "$code" = "200" ] \
+              && grep -Fq 'Your company, understood.' /tmp/home \
+              && grep -Fq 'Describe the company.' /tmp/home \
+              && grep -Fq 'Start with the amount of EXIOR you need.' /tmp/home \
+              && grep -Fq 'index,follow' /tmp/home \
+              && ! grep -Fq 'Run EXIOR X-Ray' /tmp/home; then
+              echo "EXIOR_HOSTINGER_HOME_CANONICAL_OK sha=${GITHUB_SHA}"
               exit 0
             fi
             echo "attempt=$i code=$code"
             sleep 5
           done
+          echo 'LIVE_HOME_VALIDATION_FAILED'
+          head -c 1000 /tmp/home || true
           exit 1
