@@ -10,11 +10,13 @@ if [ "${EUID:-$(id -u)}" -ne 0 ]; then
 fi
 
 if [ -z "${RUNPOD_API_KEY:-}" ]; then
-  printf 'RunPod read-only API key: '
-  stty -echo
-  read -r RUNPOD_API_KEY
-  stty echo
-  printf '\n'
+  if [ -r /dev/tty ]; then
+    read -rsp 'RunPod read-only API key: ' RUNPOD_API_KEY </dev/tty
+    printf '\n' >/dev/tty
+  else
+    echo 'No interactive terminal available. Run with RUNPOD_API_KEY set.' >&2
+    exit 1
+  fi
 fi
 
 ENVFILE="$ROOT/.env"
@@ -138,18 +140,13 @@ if '\n  gpu-router:' not in s:
     marker='\n  litellm:\n'
     block='''\n  gpu-router:\n    build: ./gpu-router\n    restart: unless-stopped\n    environment:\n      RUNPOD_API_KEY: ${RUNPOD_API_KEY:-}\n      QWEN_BASE_URL: ${QWEN_BASE_URL:-}\n      EXIOR_GPU_IMAGE_MATCH: ${EXIOR_GPU_IMAGE_MATCH:-exior-gpu}\n      GPU_DISCOVERY_TTL: ${GPU_DISCOVERY_TTL:-15}\n    networks: [exior]\n\n  litellm:\n'''
     s=s.replace(marker, block)
-# Ensure LiteLLM waits for router and no longer needs QWEN_BASE_URL directly
-if '  litellm:\n    image:' in s and '  litellm:\n    image:' in s:
-    s=s.replace('  litellm:\n    image:', '  litellm:\n    image:')
-# Replace any direct api_base is handled by litellm config mounted file.
 p.write_text(s)
 PY
 
-# Recreate only services affected by dynamic routing. Existing DB/state stays intact.
 docker compose up -d --build --force-recreate gpu-router litellm exior-worker
 sleep 5
 
-echo '=== GPU ROUTER ==='
+echo '=== EXIOR HEALTH ==='
 curl -fsS http://127.0.0.1:8001/health || true
 echo
 
