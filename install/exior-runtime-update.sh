@@ -9,19 +9,24 @@ if [ "${EUID:-$(id -u)}" -ne 0 ]; then
   exit 1
 fi
 
+ENVFILE="$ROOT/.env"
+touch "$ENVFILE"
+chmod 600 "$ENVFILE"
+
+# Reuse an already-saved RunPod key if present, otherwise ask once from the real TTY.
+if [ -z "${RUNPOD_API_KEY:-}" ]; then
+  RUNPOD_API_KEY="$(grep '^RUNPOD_API_KEY=' "$ENVFILE" | tail -n1 | cut -d= -f2- || true)"
+fi
 if [ -z "${RUNPOD_API_KEY:-}" ]; then
   if [ -r /dev/tty ]; then
     read -rsp 'RunPod read-only API key: ' RUNPOD_API_KEY </dev/tty
     printf '\n' >/dev/tty
   else
-    echo 'No interactive terminal available. Run with RUNPOD_API_KEY set.' >&2
+    echo 'No RunPod API key available.' >&2
     exit 1
   fi
 fi
 
-ENVFILE="$ROOT/.env"
-touch "$ENVFILE"
-chmod 600 "$ENVFILE"
 python3 - "$ENVFILE" "$RUNPOD_API_KEY" <<'PY'
 from pathlib import Path
 import sys
@@ -30,7 +35,8 @@ lines=p.read_text().splitlines() if p.exists() else []
 out=[]; seen=False
 for line in lines:
     if line.startswith('RUNPOD_API_KEY='):
-        out.append('RUNPOD_API_KEY='+key); seen=True
+        if not seen:
+            out.append('RUNPOD_API_KEY='+key); seen=True
     else:
         out.append(line)
 if not seen: out.append('RUNPOD_API_KEY='+key)
@@ -52,7 +58,7 @@ from typing import Optional
 import httpx
 from fastapi import FastAPI, Request, Response
 
-app = FastAPI(title="EXIOR GPU Router", version="1.0")
+app = FastAPI(title="EXIOR GPU Router", version="1.1")
 RUNPOD_GRAPHQL = "https://api.runpod.io/graphql"
 RUNPOD_API_KEY = os.getenv("RUNPOD_API_KEY", "").strip()
 STATIC_BASE = os.getenv("QWEN_BASE_URL", "").rstrip("/")
@@ -67,11 +73,13 @@ async def discover_runpod_base() -> Optional[str]:
     if _cache["base"] and now - _cache["ts"] < CACHE_TTL:
         return _cache["base"]
     query = """query { myself { pods { id name desiredStatus imageName } } }"""
-    headers = {"Authorization": f"Bearer {RUNPOD_API_KEY}"}
     async with httpx.AsyncClient(timeout=20) as client:
-        r = await client.post(RUNPOD_GRAPHQL, json={"query": query}, headers=headers)
+        r = await client.post(RUNPOD_GRAPHQL, params={"api_key": RUNPOD_API_KEY}, json={"query": query}, headers={"content-type":"application/json"})
         r.raise_for_status()
-        pods = r.json().get("data", {}).get("myself", {}).get("pods", []) or []
+        payload = r.json()
+        if payload.get("errors"):
+            raise RuntimeError(str(payload["errors"]))
+        pods = payload.get("data", {}).get("myself", {}).get("pods", []) or []
     candidates = [p for p in pods if MATCH_IMAGE in (p.get("imageName") or "").lower() and (p.get("desiredStatus") or "").upper() in {"RUNNING", "CREATED"}]
     for p in reversed(candidates):
         base = f"https://{p['id']}-8000.proxy.runpod.net"
@@ -92,7 +100,7 @@ async def backend_base() -> str:
         return dynamic
     if STATIC_BASE:
         return STATIC_BASE[:-3] if STATIC_BASE.endswith("/v1") else STATIC_BASE
-    raise RuntimeError("No GPU backend available")
+    raise RuntimeError("No healthy GPU backend available")
 
 @app.get("/health")
 async def health():
