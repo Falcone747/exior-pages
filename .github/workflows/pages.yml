@@ -26,7 +26,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/build_marketing_pages.py
-          mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/live _site/app
+          mkdir -p _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/comptabilite-ia _site/live _site/app
           cp app/home/index.html _site/index.html
           cp app/home/home.css _site/home.css
           cp app/onboarding/index.html _site/onboarding/index.html
@@ -37,6 +37,7 @@ jobs:
           cp app/ai-agent-agencies/index.html _site/ai-agent-agencies/index.html
           cp app/ai-agent-recruiting/index.html _site/ai-agent-recruiting/index.html
           cp app/ai-agent-accounting/index.html _site/ai-agent-accounting/index.html
+          cp app/comptabilite-ia/index.html _site/comptabilite-ia/index.html
           cp app/live/index.html _site/live/index.html
           cat > _site/app/index.html <<'APP'
           <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=https://app.exior.io/login"><title>EXIOR</title><script>location.replace('https://app.exior.io/login')</script>
@@ -55,6 +56,8 @@ jobs:
           test -s _site/marketing-agencies/index.html
           test -s _site/ai-agent/index.html
           test -s _site/live/index.html
+          test -s _site/comptabilite-ia/index.html
+          grep -Fq 'IA en comptabilité' _site/comptabilite-ia/index.html
           ! grep -Fq 'url=/ai-teammate/' _site/ai-agent/index.html
           grep -F 'EXIOR CHAT' _site/live/index.html
           grep -F 'DIGITAL EMPLOYEE' _site/live/index.html
