@@ -49,9 +49,9 @@ jobs:
           set -euo pipefail
           test -s _site/index.html
           test -s _site/home.css
-          grep -Fq 'Your company, understood.' _site/index.html
-          grep -Fq 'Describe the company.' _site/index.html
-          grep -Fq 'Start with the amount of EXIOR you need.' _site/index.html
+          grep -Fq 'See the company you should be running now.' _site/index.html
+          grep -Fq 'Give EXIOR the company.' _site/index.html
+          grep -Fq 'A decision system for what the company should become.' _site/index.html
           grep -Fq 'meta name="robots" content="index,follow"' _site/index.html
           ! grep -Fq 'Run EXIOR X-Ray' _site/index.html
           test -s _site/marketing-agencies/index.html
@@ -92,9 +92,9 @@ jobs:
           for i in $(seq 1 36); do
             code=$(curl -L -sS -o /tmp/home -w '%{http_code}' --max-time 20 "https://exior.io/?release=${GITHUB_SHA}" || true)
             if [ "$code" = "200" ] \
-              && grep -Fq 'Your company, understood.' /tmp/home \
-              && grep -Fq 'Describe the company.' /tmp/home \
-              && grep -Fq 'Start with the amount of EXIOR you need.' /tmp/home \
+              && grep -Fq 'See the company you should be running now.' /tmp/home \
+              && grep -Fq 'Give EXIOR the company.' /tmp/home \
+              && grep -Fq 'A decision system for what the company should become.' /tmp/home \
               && grep -Fq 'index,follow' /tmp/home \
               && ! grep -Fq 'Run EXIOR X-Ray' /tmp/home; then
               echo "EXIOR_HOSTINGER_HOME_CANONICAL_OK sha=${GITHUB_SHA}"
