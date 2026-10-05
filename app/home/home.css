@@ -146,7 +146,14 @@ button,input{font:inherit}
   font-size:18px;
   line-height:1.62;
 }
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero-qualifier{
+  margin:14px 0 0;
+  color:#788278;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.01em;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
 .hero-proof{
   margin-top:30px;
   display:flex;
@@ -1125,4 +1132,84 @@ button,input{font:inherit}
   .reveal{opacity:1;transform:none;transition:none}
   .status-dot i{animation:none}
   .button,.process-node{transition:none}
+}
+.intelligence-layer{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(184,243,108,.035),transparent 28%),
+    var(--bg);
+}
+.layer-grid{
+  display:grid;
+  grid-template-columns:1fr 70px 1fr 70px 1fr;
+  gap:14px;
+  align-items:center;
+}
+.layer-grid article{
+  min-height:310px;
+  position:relative;
+  padding:24px;
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.008)),
+    #0c100d;
+}
+.layer-number{
+  font-family:"IBM Plex Mono",monospace;
+  color:#5f6a60;
+  font-size:9px;
+}
+.layer-icon{
+  width:48px;
+  height:48px;
+  margin-top:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  border:1px solid rgba(184,243,108,.20);
+  background:rgba(184,243,108,.05);
+  color:var(--accent);
+  font-family:"IBM Plex Mono",monospace;
+  font-weight:600;
+}
+.layer-grid h3{
+  margin:24px 0 9px;
+  font-size:22px;
+  letter-spacing:-.035em;
+}
+.layer-grid p{
+  margin:0;
+  color:#7d877e;
+  font-size:12px;
+  line-height:1.6;
+}
+.layer-operator{
+  color:#4f5b50;
+  font-size:30px;
+  text-align:center;
+  font-weight:300;
+}
+.layer-result{
+  margin-top:16px;
+  padding:22px 24px;
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:24px;
+  align-items:center;
+  border:1px solid rgba(184,243,108,.16);
+  border-radius:14px;
+  background:rgba(184,243,108,.025);
+}
+.layer-result strong{
+  font-size:16px;
+  line-height:1.45;
+}
+
+@media(max-width:1080px){
+  .layer-grid{grid-template-columns:1fr}
+  .layer-operator{transform:rotate(90deg)}
+}
+@media(max-width:760px){
+  .layer-result{grid-template-columns:1fr;gap:8px}
 }
