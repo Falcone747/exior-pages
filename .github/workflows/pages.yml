@@ -26,11 +26,12 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/build_marketing_pages.py
-          mkdir -p _site/agents _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/comptabilite-ia _site/finance-automation _site/live _site/app
+          mkdir -p _site/os _site/agents _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/comptabilite-ia _site/finance-automation _site/live _site/app
           cp app/home/index.html _site/index.html
           cp app/home/home.css _site/home.css
           cp app/onboarding/index.html _site/onboarding/index.html
           cp app/agents/index.html _site/agents/index.html
+          cp app/os/index.html app/os/os.css app/os/os.js _site/os/
           cp app/ai-teammate/index.html _site/ai-agent/index.html
           cp app/ai-teammate/index.html _site/ai-teammate/index.html
           cp app/custom-ai-agent/index.html _site/custom-ai-agent/index.html
@@ -57,6 +58,8 @@ jobs:
           ! grep -Fq 'Run EXIOR X-Ray' _site/index.html
           test -s _site/agents/index.html
           grep -Fq 'Agents that do the work' _site/agents/index.html
+          test -s _site/os/index.html && test -s _site/os/os.css && test -s _site/os/os.js
+          grep -Fq '<title>EXIOR OS</title>' _site/os/index.html
           test -s _site/marketing-agencies/index.html
           test -s _site/ai-agent/index.html
           test -s _site/live/index.html
@@ -138,4 +141,19 @@ jobs:
           done
           echo 'AGENTS_PAGE_VALIDATION_FAILED'
           head -c 1000 /tmp/agents || true
+          exit 1
+      - name: Verify EXIOR OS app
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 36); do
+            code=$(curl -L -sS -o /tmp/os -w '%{http_code}' --max-time 20 "https://exior.io/os/?release=${GITHUB_SHA}" || true)
+            js=$(curl -L -sS -o /dev/null -w '%{http_code}' --max-time 20 "https://exior.io/os/os.js?release=${GITHUB_SHA}" || true)
+            if [ "$code" = "200" ] && [ "$js" = "200" ] && grep -Fq '<title>EXIOR OS</title>' /tmp/os; then
+              echo "EXIOR_OS_OK sha=${GITHUB_SHA}"
+              exit 0
+            fi
+            echo "attempt=$i code=$code js=$js"
+            sleep 5
+          done
+          echo 'EXIOR_OS_VALIDATION_FAILED'
           exit 1
