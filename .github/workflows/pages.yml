@@ -124,3 +124,18 @@ jobs:
           echo 'FINANCE_AUTOMATION_VERTICAL_VALIDATION_FAILED'
           head -c 1000 /tmp/finance-automation || true
           exit 1
+      - name: Verify agents page
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 36); do
+            code=$(curl -L -sS -o /tmp/agents -w '%{http_code}' --max-time 20 "https://exior.io/agents/?release=${GITHUB_SHA}" || true)
+            if [ "$code" = "200" ] && grep -Fq 'Agents that do the work' /tmp/agents; then
+              echo "AGENTS_PAGE_OK sha=${GITHUB_SHA}"
+              exit 0
+            fi
+            echo "attempt=$i code=$code"
+            sleep 5
+          done
+          echo 'AGENTS_PAGE_VALIDATION_FAILED'
+          head -c 1000 /tmp/agents || true
+          exit 1
