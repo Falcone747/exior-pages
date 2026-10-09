@@ -79,7 +79,8 @@ jobs:
           npx --yes playwright@1.48.2 install --with-deps chromium > /dev/null
           (cd _site && python -m http.server 8000 > /dev/null 2>&1 &)
           sleep 2
-          node scripts/site_qa.mjs http://127.0.0.1:8000/
+          if [ "${{ github.event_name }}" = "pull_request" ]; then git fetch -q --depth=1 origin main && git show origin/main:scripts/qa_baseline.json > /tmp/base_baseline.json; fi
+          BASE_BASELINE=/tmp/base_baseline.json node scripts/site_qa.mjs http://127.0.0.1:8000/
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
         with:
