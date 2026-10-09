@@ -1,74 +1,47 @@
-"""Favicon set from the reference owl (ref/chouette-reference.webp).
+"""Favicon set made from the reference owl itself (ref/chouette-reference.webp).
 
-32 px and up: the exact reference image, cropped to its content.
-16 px: hand-placed pixel adaptation of the same owl (a plain downscale
-turns into an unreadable blob at that size).
+The favicon is a tight crop on the head (eyes, brows, beak, shoulders):
+at 16-48 px the whole tall bird would be too small to read, the face is
+what carries the owl. Larger sizes keep the full image.
 """
 from pathlib import Path
-from PIL import Image
+
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
+
+from build import ico
 
 ROOT = Path(__file__).parent
 OUT = ROOT / "final-chouette"
-CROP = (67, 93, 1177, 1203)  # square around moon + owl, measured on 1254 px
-
-PAL = {
-    ".": (0, 0, 0), "W": (250, 247, 240), "l": (205, 205, 205),
-    "g": (138, 138, 138), "d": (70, 70, 70), "p": (138, 77, 255), "P": (190, 150, 255),
-}
-PIX16 = [
-    "....WWWWWWWW....",
-    "..WWWWWWWWWWWW..",
-    ".WWW..dddd..WWW.",
-    ".WW.l......l.WW.",
-    "WWW..ll..ll..WWW",
-    "WW...pp..pp...WW",
-    "WW...pP.gPp...WW",
-    "WW......g.....WW",
-    ".W..gl.....lg.W.",
-    ".WW.ggl.lg.ggWW.",
-    "..Wggl.lgg.ggW..",
-    "..lgg.lgg.gg....",
-    "..lg.lgg.g......",
-    "..lg.lg.g.......",
-    "...g.lg.........",
-    "....g...........",
-]
+HEAD = (388, 150, 948, 710)  # square crop on the head, measured on the 1254 px source
 
 
-def pix(rows):
-    im = Image.new("RGB", (16, 16))
-    for y, r in enumerate(rows):
-        for x, ch in enumerate(r):
-            im.putpixel((x, y), PAL[ch])
-    return im
-
-
-def ico(frames):
-    import struct
-    from io import BytesIO
-    blobs = []
-    for im in frames:
-        b = BytesIO(); im.save(b, "PNG"); blobs.append(b.getvalue())
-    off = 6 + 16 * len(frames)
-    head = struct.pack("<HHH", 0, 1, len(frames)); ent = b""
-    for im, blob in zip(frames, blobs):
-        ent += struct.pack("<BBBBHHII", im.size[0] % 256, im.size[1] % 256, 0, 0, 1, 32, len(blob), off)
-        off += len(blob)
-    return head + ent + b"".join(blobs)
+def rounded(im, r=0.22):
+    n = im.size[0]
+    m = Image.new("L", (n * 4, n * 4), 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, n * 4 - 1, n * 4 - 1), int(n * 4 * r), fill=255)
+    out = im.convert("RGBA")
+    out.putalpha(m.resize((n, n), Image.LANCZOS))
+    return out
 
 
 def main():
+    for f in OUT.glob("*"):
+        f.unlink()
     OUT.mkdir(exist_ok=True)
-    src = Image.open(ROOT / "ref" / "chouette-reference.webp").convert("RGB").crop(CROP)
-    sizes = {n: src.resize((n, n), Image.LANCZOS) for n in (32, 48, 128, 180, 512)}
-    sizes[16] = pix(PIX16)
-    sizes[16].save(OUT / "favicon-16.png")
-    sizes[32].save(OUT / "favicon-32.png")
-    sizes[128].save(OUT / "chouette-128.png")
-    sizes[180].save(OUT / "apple-touch-icon.png")
-    sizes[512].save(OUT / "chouette-512.png")
-    (OUT / "favicon.ico").write_bytes(ico([sizes[16], sizes[32], sizes[48]]))
-    return sizes
+    src = Image.open(ROOT / "ref" / "chouette-reference.webp").convert("RGB")
+    head = src.crop(HEAD)
+    ims = {}
+    for n in (16, 32, 48, 180):
+        s = head.resize((n, n), Image.LANCZOS)
+        if n <= 32:  # keep edges and the purple eyes crisp at tab size
+            s = ImageEnhance.Contrast(s).enhance(1.25).filter(ImageFilter.UnsharpMask(1, 60, 0))
+        ims[n] = rounded(s)
+    ims[16].save(OUT / "favicon-16.png")
+    ims[32].save(OUT / "favicon-32.png")
+    ims[48].save(OUT / "favicon-48.png")
+    ims[180].save(OUT / "apple-touch-icon.png")
+    (OUT / "favicon.ico").write_bytes(ico([ims[16], ims[32], ims[48]]))
+    src.resize((512, 512), Image.LANCZOS).save(OUT / "chouette-512.png")
 
 
 if __name__ == "__main__":
