@@ -5,6 +5,11 @@ import fs from 'node:fs';
 const base = process.argv[2] || 'http://127.0.0.1:8000/';
 const pages = ['/', ...fs.readdirSync('_site', { withFileTypes: true }).filter(d => d.isDirectory() && fs.existsSync(`_site/${d.name}/index.html`)).map(d => `/${d.name}/`)];
 const baseline = JSON.parse(fs.readFileSync('scripts/qa_baseline.json', 'utf8'));
+if (process.env.BASE_BASELINE && fs.existsSync(process.env.BASE_BASELINE)) {  // ratchet guard: tolerances may only decrease
+  const before = JSON.parse(fs.readFileSync(process.env.BASE_BASELINE, 'utf8')).overflow_px || {};
+  const loosened = Object.entries(baseline.overflow_px || {}).filter(([k, v]) => !(k in before) || v > before[k]);
+  if (loosened.length) { console.error('QA BASELINE LOOSENED (forbidden): ' + JSON.stringify(loosened)); process.exit(1); }
+}
 const browser = await chromium.launch();
 const fails = [], report = [];
 for (const path of pages) {
