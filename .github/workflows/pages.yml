@@ -26,7 +26,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/build_marketing_pages.py
-          mkdir -p _site/reconstruction _site/agents _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/comptabilite-ia _site/finance-automation _site/live _site/app
+          mkdir -p _site/agents _site/onboarding _site/ai-agent _site/ai-teammate _site/custom-ai-agent _site/ai-agent-sprint _site/ai-agent-agencies _site/ai-agent-recruiting _site/ai-agent-accounting _site/comptabilite-ia _site/finance-automation _site/live _site/app
           cp app/home/index.html _site/index.html
           cp app/home/home.css _site/home.css
           cp app/onboarding/index.html _site/onboarding/index.html
@@ -41,7 +41,6 @@ jobs:
           cp app/comptabilite-ia/index.html _site/comptabilite-ia/index.html
           cp app/finance-automation/index.html _site/finance-automation/index.html
           cp app/live/index.html _site/live/index.html
-          cp app/reconstruction/index.html _site/reconstruction/index.html
           cat > _site/app/index.html <<'APP'
           <!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=https://app.exior.io/login"><title>EXIOR</title><script>location.replace('https://app.exior.io/login')</script>
           APP
@@ -69,9 +68,6 @@ jobs:
           grep -F 'EXIOR CHAT' _site/live/index.html
           grep -F 'DIGITAL EMPLOYEE' _site/live/index.html
           ! grep -Fi 'vercel' _site/live/index.html
-          test -s _site/reconstruction/index.html
-          grep -Fq 'Reconstruction EXIOR' _site/reconstruction/index.html
-          grep -Fq 'buy.stripe.com/14A28qaA00wzdo7eND7IY03' _site/reconstruction/index.html
       - name: Validate finance automation source sentinel
         run: grep -Fq 'Automate the right finance work first' app/finance-automation/index.html
       - uses: actions/configure-pages@v5
