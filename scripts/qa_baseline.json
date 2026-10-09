@@ -1,0 +1,7 @@
+{
+  "_comment": "Known defects tolerated until fixed. Values may only DECREASE. Any new defect blocks merge and deploy.",
+  "overflow_px": {
+    "/ [mobile]": 182,
+    "/finance-automation/ [mobile]": 17
+  }
+}
