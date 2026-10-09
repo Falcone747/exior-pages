@@ -15,8 +15,8 @@ def owl(body=K, outline=W, iris=V, tile=None):
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><title>EXIOR</title>' + t +
         f'<defs><clipPath id="b"><path d="{BODY}"/></clipPath></defs><path d="{BODY}" fill="{body}"{o}/><g clip-path="url(#b)">'
         # wings: two lighter crescents on the flanks
-        f'<path d="M4.6 17C4.4 22 6.6 26.4 10 28.4C8.4 25 8 21 8.6 17.6Z" fill="{iris}" opacity=".55"/>'
-        f'<path d="M27.4 17C27.6 22 25.4 26.4 22 28.4C23.6 25 24 21 23.4 17.6Z" fill="{iris}" opacity=".55"/>'
+        f'<path d="M4.6 17C4.4 22 6.6 26.4 10 28.4C8.4 25 8 21 8.6 17.6Z" fill="{VL}"/>'
+        f'<path d="M27.4 17C27.6 22 25.4 26.4 22 28.4C23.6 25 24 21 23.4 17.6Z" fill="{VL}"/>'
         # eyes
         f'<circle cx="10.6" cy="14" r="5.6" fill="{W}"/><circle cx="21.4" cy="14" r="5.6" fill="{W}"/>'
         f'<circle cx="11.2" cy="14.8" r="3.4" fill="{iris}"/><circle cx="20.8" cy="14.8" r="3.4" fill="{iris}"/>'
@@ -54,9 +54,13 @@ def main():
     fin.mkdir(exist_ok=True)
     (fin / "exior-chouette.svg").write_text(VARIANTS["a-noire-contour"])
     ims = {16: pix16()}
-    for n in (32, 48, 180, 512):
+    from crisp import crisp
+    for n in (32, 48):
+        ims[n] = crisp(VARIANTS["a-noire-contour"], n)
+    for n in (180, 512):
         png = cairosvg.svg2png(bytestring=VARIANTS["a-noire-contour"].encode(), output_width=n, output_height=n)
         ims[n] = Image.open(BytesIO(png)).convert("RGBA")
+    ims[48].save(fin / "favicon-48.png")
     ims[16].save(fin / "favicon-16.png")
     ims[32].save(fin / "favicon-32.png")
     ims[180].save(fin / "apple-touch-icon.png")
