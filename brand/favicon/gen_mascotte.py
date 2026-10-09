@@ -54,10 +54,7 @@ def main():
     fin.mkdir(exist_ok=True)
     (fin / "exior-chouette.svg").write_text(VARIANTS["a-noire-contour"])
     ims = {16: pix16()}
-    from crisp import crisp
-    for n in (32, 48):
-        ims[n] = crisp(VARIANTS["a-noire-contour"], n)
-    for n in (180, 512):
+    for n in (32, 48, 180, 512):
         png = cairosvg.svg2png(bytestring=VARIANTS["a-noire-contour"].encode(), output_width=n, output_height=n)
         ims[n] = Image.open(BytesIO(png)).convert("RGBA")
     ims[48].save(fin / "favicon-48.png")
