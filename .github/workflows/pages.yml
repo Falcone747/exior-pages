@@ -3,6 +3,8 @@ name: Publish EXIOR Pages
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,8 +13,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: ${{ github.event_name == 'pull_request' && format('qa-{0}', github.head_ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -27,17 +29,23 @@ jobs:
           test -f _site/index.html
           test -f _site/CNAME
           test -f _site/.nojekyll
+          test -f _site/commander/index.html
           grep -Fq '990' _site/index.html
           grep -Fq 'exior.io' _site/CNAME
+          grep -Fq 'lang="fr"' _site/index.html
+          ! grep -Fq 'See the company you should be running now.' _site/index.html
       - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
         with:
           path: _site
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -49,6 +57,7 @@ jobs:
 
   verify:
     needs: deploy
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Verify French EXIOR homepage on exior.io
@@ -61,7 +70,6 @@ jobs:
               && grep -Fq 'lang="fr"' /tmp/home \
               && ! grep -Fq 'See the company you should be running now.' /tmp/home; then
               echo "EXIOR_FR_HOME_OK sha=${GITHUB_SHA}"
-              # spot-check commander
               ccode=$(curl -L -sS -o /tmp/cmd -w '%{http_code}' --max-time 20 "https://exior.io/commander" || true)
               test "$ccode" = "200"
               exit 0
